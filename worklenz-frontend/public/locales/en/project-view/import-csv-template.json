@@ -1,0 +1,194 @@
+{
+  "title": "Import CSV to Worklenz",
+  "cancel": "Cancel",
+  "import": "Import",
+  "remove": "Remove",
+  "previous": "Previous",
+  "next": "Next",
+  "steps": {
+    "uploadCsv": {
+      "title": "Upload CSV"
+    },
+    "mapFields": {
+      "title": "Map Fields"
+    },
+    "moveUsers": {
+      "title": "Move Users"
+    },
+    "reviewImport": {
+      "title": "Review & Import"
+    }
+  },
+  "uploadStep": {
+    "title": "Upload CSV File",
+    "description": "Upload your CSV file containing the data you want to import into Worklenz.",
+    "uploadArea": {
+      "dragText": "Click or drag file to this area to upload",
+      "hint": "Support for CSV files only. Maximum file size 10MB."
+    },
+    "processing": {
+      "text": "Processing CSV file...",
+      "successMessage": "Found {{rowCount}} rows and {{columnCount}} columns",
+      "columnsLabel": "Columns:",
+      "failedToRead": "Failed to read file content",
+      "parsingErrors": "CSV parsing errors found",
+      "failedToParse": "Failed to parse CSV file",
+      "failedToProcess": "Failed to process CSV file",
+      "emptyFile": "Empty CSV file",
+      "noDataFound": "No data found in CSV"
+    },
+    "preview": {
+      "title": "CSV Preview",
+      "foundData": "Found {{rowCount}} rows and {{columnCount}} columns",
+      "columnsLabel": "Columns:"
+    },
+    "errors": {
+      "title": "CSV Parsing Errors",
+      "expectedColumns": "Row {{row}}: Expected {{expected}} columns, found {{found}}"
+    },
+    "loadingTemplate": "Loading project template data...",
+    "validationSummary": {
+      "title": "Validation completed with {{count}} warnings",
+      "moreWarnings": "... and {{count}} more",
+      "status": "Validation Status",
+      "validTasks": "Valid Tasks",
+      "errors": "Errors"
+    }
+  },
+  "mapFieldsStep": {
+    "title": "Map Fields",
+    "description": "Map your CSV columns to Worklenz fields. Each Worklenz field can only be mapped once. At least one field must be mapped to \"Task Name\".",
+    "table": {
+      "csvColumn": "CSV Column",
+      "sampleData": "Sample Data",
+      "mapToField": "Map to Worklenz Field",
+      "status": "Status",
+      "selectPlaceholder": "Select field to map",
+      "alreadyMapped": "(Already mapped)",
+      "mapped": "Mapped",
+      "notMapped": "Not Mapped"
+    },
+    "requirements": {
+      "title": "Field Mapping Requirements",
+      "description": "At least one CSV column must be mapped to 'Task Name' field to proceed. This is required for creating tasks."
+    },
+    "worklenzFields": {
+      "name": "Task Name",
+      "description": "Description",
+      "priority": "Priority",
+      "assignee": "Assignee",
+      "dueDate": "Due Date",
+      "status": "Status",
+      "labels": "Labels",
+      "estimation": "Estimation",
+      "startDate": "Start Date",
+      "reporter": "Reporter"
+    },
+    "defaults": {
+      "priority": "Default Priority for all tasks",
+      "status": "Default Status for all tasks",
+      "description": "These values will be used if 'Priority' or 'Status' are not mapped from your CSV."
+    }
+  },
+  "moveUsersStep": {
+    "title": "Move Users",
+    "description": "Handle user assignments found in your CSV. You can create new users, map to existing users, or skip assignments.",
+    "noUsers": {
+      "title": "No users found in CSV",
+      "description": "No assignee data was detected in your CSV file. Tasks will be imported without assignees."
+    },
+    "table": {
+      "userInCsv": "User in CSV",
+      "action": "Action",
+      "mapToUser": "Map to User",
+      "status": "Status",
+      "selectExistingUser": "Select existing user",
+      "enterEmailForNewUser": "Enter email for new user"
+    },
+    "actions": {
+      "createUser": "Create User",
+      "mapToExisting": "Map to Existing",
+      "skip": "Skip"
+    },
+    "statuses": {
+      "skipped": "Skipped",
+      "readyToCreate": "Ready to Create",
+      "emailRequired": "Email Required",
+      "mapped": "Mapped",
+      "mappingRequired": "Mapping Required"
+    },
+    "availableMembers": "Available Team Members:",
+    "loadingMembers": "Loading team members..."
+  },
+  "reviewStep": {
+    "title": "Review & Import",
+    "description": "Review your import configuration and start the import process.",
+    "summary": {
+      "title": "Import Summary",
+      "csvRows": "CSV Rows",
+      "mappedFields": "Mapped Fields",
+      "usersToCreate": "Users to Create",
+      "tasksToImport": "Tasks to Import"
+    },
+    "fieldMappings": {
+      "title": "Field Mappings",
+      "noMappings": "No field mappings configured"
+    },
+    "userMappings": {
+      "title": "User Mappings",
+      "create": "Create: {{email}}",
+      "map": "Map: {{user}}",
+      "noMappings": "No user mappings needed"
+    },
+    "sampleData": {
+      "title": "Sample Import Data",
+      "description": "Preview of first 3 tasks that will be imported:",
+      "taskLabel": "Task {{index}}:",
+      "noName": "<No Name>",
+      "descriptionLabel": "Description:",
+      "moreTasks": "... and {{count}} more tasks"
+    }
+  },
+  "messages": {
+    "success": {
+      "csvParsed": "Successfully parsed {{count}} rows from CSV",
+      "tasksImported": "Successfully imported {{count}} tasks"
+    },
+    "warning": {
+      "validationErrors": "Found {{count}} validation errors",
+      "noValidTasks": "No valid tasks found in CSV",
+      "validationFailed": "Validation failed"
+    },
+    "error": {
+      "failedToReadFile": "Failed to read file content",
+      "csvParsingErrors": "CSV parsing errors found: {{count}} errors",
+      "csvFormatValidation": "CSV format validation failed",
+      "failedToParseFile": "Failed to parse CSV file",
+      "failedToProcessFile": "Failed to process CSV file",
+      "failedToImportTasks": "Failed to import tasks: {{error}}",
+      "failedToLoadTemplate": "Failed to load project template data"
+    }
+  },
+  "validation": {
+    "nameRequired": "Row {{row}}: Name is required",
+    "invalidPriority": "Row {{row}}: Invalid priority '{{priority}}'. Must be one of: {{validPriorities}}",
+    "invalidDateFormat": "Row {{row}}: Due date must be in YYYY-MM-DD format",
+    "csvMustContainName": "CSV must contain a 'name' column",
+    "unknownColumns": "Unknown columns found: {{columns}}"
+  },
+  "memberMapping": {
+    "selectPlaceholder": "Select team member"
+  },
+  "modal": {
+    "title": "Import CSV Tasks",
+    "importButton": "Import ({{count}} tasks)"
+  },
+  "common": {
+    "of": "of",
+    "columns": "columns"
+  },
+  "errors": {
+    "projectIdRequired": "Project ID is required",
+    "unknownError": "Unknown error occurred"
+  }
+}

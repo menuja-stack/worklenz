@@ -1,5 +1,6 @@
 {
   "importTasks": "작업을 가져옵니다",
+  "importCSV": "CSV 가져 오기",
   "importTask": "가져 오기 작업",
   "createTask": "작업을 만듭니다",
   "settings": "설정",

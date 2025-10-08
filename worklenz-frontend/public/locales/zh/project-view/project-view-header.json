@@ -1,6 +1,7 @@
 {
   "importTasks": "导入任务",
   "importTask": "导入任务",
+  "importCSV": "导入 CSV",
   "createTask": "创建任务",
   "settings": "设置",
   "subscribe": "订阅",

@@ -1,5 +1,6 @@
 {
   "importTasks": "Importar tareas",
+  "importCSV": "Importar CSV",
   "importTask": "Importar tarea",
   "createTask": "Crear tarea",
   "settings": "Configuración",

@@ -1,0 +1,146 @@
+{
+  "title": "Importar CSV para o Worklenz",
+  "cancel": "Cancelar",
+  "import": "Importar",
+  "remove": "Remover",
+  "previous": "Anterior",
+  "next": "Seguinte",
+  "steps": {
+    "uploadCsv": {
+      "title": "Carregar CSV"
+    },
+    "mapFields": {
+      "title": "Mapear Campos"
+    },
+    "moveUsers": {
+      "title": "Mover Utilizadores"
+    },
+    "reviewImport": {
+      "title": "Rever e Importar"
+    }
+  },
+  "uploadStep": {
+    "title": "Carregar Ficheiro CSV",
+    "description": "Carregue o seu ficheiro CSV que contém os dados que pretende importar para o Worklenz.",
+    "uploadArea": {
+      "dragText": "Clique ou arraste o ficheiro para esta área para carregar",
+      "hint": "Apenas são suportados ficheiros CSV. Tamanho máximo 10 MB."
+    },
+    "processing": {
+      "text": "A processar ficheiro CSV...",
+      "successMessage": "Foram encontradas {{rowCount}} linhas e {{columnCount}} colunas",
+      "columnsLabel": "Colunas:",
+      "failedToRead": "Não foi possível ler o conteúdo do ficheiro",
+      "parsingErrors": "Foram encontrados erros ao analisar o CSV",
+      "failedToParse": "Não foi possível analisar o ficheiro CSV",
+      "failedToProcess": "Não foi possível processar o ficheiro CSV",
+      "emptyFile": "O ficheiro CSV está vazio",
+      "noDataFound": "Não foram encontrados dados no CSV"
+    },
+    "preview": {
+      "title": "Pré-visualização do CSV",
+      "foundData": "Foram encontradas {{rowCount}} linhas e {{columnCount}} colunas"
+    },
+    "errors": {
+      "title": "Erros de Análise do CSV",
+      "expectedColumns": "Linha {{row}}: Esperavam-se {{expected}} colunas, foram encontradas {{found}}"
+    }
+  },
+  "mapFieldsStep": {
+    "title": "Mapear Campos",
+    "description": "Mapeie as colunas do seu CSV para os campos do Worklenz. Cada campo do Worklenz só pode ser mapeado uma vez. Pelo menos um campo deve ser mapeado para \"Nome da Tarefa\".",
+    "table": {
+      "csvColumn": "Coluna CSV",
+      "sampleData": "Dados de Exemplo",
+      "mapToField": "Mapear para Campo do Worklenz",
+      "status": "Estado",
+      "selectPlaceholder": "Selecionar campo para mapear",
+      "alreadyMapped": "(Já mapeado)",
+      "mapped": "Mapeado",
+      "notMapped": "Não Mapeado"
+    },
+    "requirements": {
+      "title": "Requisitos de Mapeamento",
+      "description": "Pelo menos uma coluna CSV deve ser mapeada para o campo 'Nome da Tarefa' para continuar. Cada campo do Worklenz só pode ser mapeado para uma coluna CSV."
+    },
+    "worklenzFields": {
+      "name": "Nome da Tarefa",
+      "description": "Descrição",
+      "priority": "Prioridade",
+      "assignee": "Responsável",
+      "dueDate": "Data de Vencimento",
+      "status": "Estado",
+      "labels": "Etiquetas",
+      "storyPoints": "Pontos de História",
+      "epic": "Épico"
+    }
+  },
+  "moveUsersStep": {
+    "title": "Mover Utilizadores",
+    "description": "Gira as atribuições de utilizadores encontradas no seu CSV. Pode criar novos utilizadores, mapear para utilizadores existentes ou ignorar atribuições.",
+    "noUsers": {
+      "title": "Nenhum Utilizador Encontrado",
+      "description": "Não foram encontradas atribuições de utilizadores nos seus dados CSV."
+    },
+    "table": {
+      "userInCsv": "Utilizador no CSV",
+      "action": "Ação",
+      "mapToUser": "Mapear para Utilizador do Worklenz",
+      "status": "Estado",
+      "selectExistingUser": "Selecionar utilizador existente",
+      "enterEmailForNewUser": "Introduzir email para novo utilizador"
+    },
+    "actions": {
+      "createUser": "Criar Utilizador",
+      "mapToExisting": "Mapear para Existente",
+      "skip": "Ignorar"
+    },
+    "statuses": {
+      "skipped": "Ignorado",
+      "readyToCreate": "Pronto para Criar",
+      "emailRequired": "Email Obrigatório",
+      "mapped": "Mapeado",
+      "mappingRequired": "Mapeamento Obrigatório"
+    }
+  },
+  "reviewStep": {
+    "title": "Rever e Importar",
+    "description": "Reveja a configuração da importação e inicie o processo de importação.",
+    "summary": {
+      "title": "Resumo da Importação",
+      "csvRows": "Linhas CSV",
+      "mappedFields": "Campos Mapeados",
+      "usersToCreate": "Utilizadores a Criar",
+      "tasksToImport": "Tarefas a Importar"
+    },
+    "fieldMappings": {
+      "title": "Mapeamento de Campos",
+      "noMappings": "Nenhum mapeamento de campos configurado"
+    }
+  },
+  "messages": {
+    "success": {
+      "csvParsed": "{{count}} linhas analisadas com sucesso do CSV",
+      "tasksImported": "{{count}} tarefas importadas com sucesso"
+    },
+    "warning": {
+      "validationErrors": "Foram encontrados {{count}} erros de validação",
+      "noValidTasks": "Não foram encontradas tarefas válidas no CSV"
+    },
+    "error": {
+      "failedToReadFile": "Não foi possível ler o conteúdo do ficheiro",
+      "csvParsingErrors": "Foram encontrados erros ao analisar o CSV",
+      "csvFormatValidation": "Falha na validação do formato CSV",
+      "failedToParseFile": "Não foi possível analisar o ficheiro CSV",
+      "failedToProcessFile": "Não foi possível processar o ficheiro CSV",
+      "failedToImportTasks": "Falha ao importar tarefas: {{error}}"
+    }
+  },
+  "validation": {
+    "nameRequired": "Linha {{row}}: O nome é obrigatório",
+    "invalidPriority": "Linha {{row}}: Prioridade inválida '{{priority}}'. Deve ser uma das seguintes: {{validPriorities}}",
+    "invalidDateFormat": "Linha {{row}}: A data de vencimento deve estar no formato AAAA-MM-DD",
+    "csvMustContainName": "O CSV deve conter uma coluna 'name'",
+    "unknownColumns": "Foram encontradas colunas desconhecidas: {{columns}}"
+  }
+}

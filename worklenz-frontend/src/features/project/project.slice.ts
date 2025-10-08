@@ -26,6 +26,7 @@ interface TaskListState {
   isLoading: boolean;
   error: string | null;
   importTaskTemplateDrawerOpen: boolean;
+  importCSVTemplateDrawerOpen: boolean;
   createTaskTemplateDrawerOpen: boolean;
   projectView: 'list' | 'kanban';
   refreshTimestamp: string | null;
@@ -48,6 +49,7 @@ const initialState: TaskListState = {
   isLoading: false,
   error: null,
   importTaskTemplateDrawerOpen: false,
+  importCSVTemplateDrawerOpen: false,
   createTaskTemplateDrawerOpen: false,
   projectView: 'list',
   refreshTimestamp: null,
@@ -108,6 +110,11 @@ const projectSlice = createSlice({
     setImportTaskTemplateDrawerOpen: (state, action: PayloadAction<boolean>) => {
       state.importTaskTemplateDrawerOpen = action.payload;
     },
+
+    setImportCSVTemplateDrawerOpen: (state, action: PayloadAction<boolean>) => {
+      state.importCSVTemplateDrawerOpen = action.payload;
+    },
+
     setCreateTaskTemplateDrawerOpen: (state, action: PayloadAction<boolean>) => {
       state.createTaskTemplateDrawerOpen = action.payload;
     },
@@ -211,6 +218,7 @@ export const {
   deleteTask,
   reset,
   setImportTaskTemplateDrawerOpen,
+  setImportCSVTemplateDrawerOpen,
   setCreateTaskTemplateDrawerOpen,
   setProjectView,
   updatePhaseLabel,

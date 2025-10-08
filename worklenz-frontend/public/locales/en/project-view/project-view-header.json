@@ -1,5 +1,6 @@
 {
   "importTasks": "Import tasks",
+  "importCSV": "Import CSV",
   "importTask": "Import task",
   "createTask": "Create task",
   "settings": "Settings",

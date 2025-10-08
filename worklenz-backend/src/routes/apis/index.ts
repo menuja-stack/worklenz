@@ -62,6 +62,7 @@ import customColumnsApiRouter from "./custom-columns-api-router";
 import userActivityLogsApiRouter from "./user-activity-logs-api-router";
 import supportApiRouter from "./support-api-router";
 import accountApiRouter from "./account-api-router";
+import taskCsvImportApiRouter from "./task-csv-import-api-router";
 
 const api = express.Router();
 
@@ -126,4 +127,6 @@ api.use("/support", supportApiRouter);
 api.use("/account", accountApiRouter);
 
 api.use("/logs", userActivityLogsApiRouter);
+api.use("/task-csv-import", taskCsvImportApiRouter);
+
 export default api;

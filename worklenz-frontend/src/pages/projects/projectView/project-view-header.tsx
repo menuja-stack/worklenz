@@ -32,6 +32,7 @@ import { useSocket } from '@/socket/socketContext';
 import {
   setProject,
   setImportTaskTemplateDrawerOpen,
+  setImportCSVTemplateDrawerOpen,
   setRefreshTimestamp,
   getProject,
 } from '@features/project/project.slice';
@@ -67,6 +68,9 @@ import { fetchEnhancedKanbanGroups } from '@/features/enhanced-kanban/enhanced-k
 import { fetchTasksV3 } from '@/features/task-management/task-management.slice';
 import { ShareAltOutlined } from '@/shared/antd-imports';
 import { fetchStatuses } from '@/features/taskAttributes/taskStatusSlice';
+import { FileOutlined } from '@ant-design/icons';
+import { create } from 'lodash';
+import ImportCSVTemplate from '@/components/task-templates/import-csv-template';
 
 const ProjectViewHeader = memo(() => {
   const navigate = useNavigate();
@@ -249,6 +253,10 @@ const ProjectViewHeader = memo(() => {
     dispatch(setImportTaskTemplateDrawerOpen(true));
   }, [dispatch]);
 
+   const handleImportCSVTemplate = useCallback(() => {
+    dispatch(setImportCSVTemplateDrawerOpen(true));
+  }, [dispatch]);
+
   // Memoized navigation handler
   const handleNavigateToProjects = useCallback(() => {
     navigate('/worklenz/projects');
@@ -275,8 +283,16 @@ const ProjectViewHeader = memo(() => {
           </div>
         ),
       },
+      {
+        key: 'import',
+        label: (
+          <div style={{ width: '100%', margin: 0, padding: 0 }} onClick={handleImportCSVTemplate} title={t('importCSVTooltip')}>
+            <FileOutlined /> {t('importCSV')}
+          </div>
+        ),
+      },
     ],
-    [handleImportTaskTemplate, t]
+    [handleImportTaskTemplate,handleImportCSVTemplate, t]
   );
 
   // Memoized project attributes with optimized date formatting
@@ -503,6 +519,7 @@ const ProjectViewHeader = memo(() => {
       {createPortal(<ProjectDrawer onClose={() => {}} />, document.body, 'project-drawer')}
       {createPortal(<ImportTaskTemplate />, document.body, 'import-task-template')}
       {createPortal(<SaveProjectAsTemplate />, document.body, 'save-project-as-template')}
+      {createPortal(<ImportCSVTemplate onFetchTasks={() => {}} />, document.body, 'import-csv-template')}
     </>
   );
 });
