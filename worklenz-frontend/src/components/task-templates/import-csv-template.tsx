@@ -45,6 +45,9 @@ import { RootState } from '@/app/store';
 import { Avatar } from 'antd';
 import { useSelector } from 'react-redux';
 import { IServerResponse } from '@/types/api.types';
+import { fetchBoardTaskGroups } from '@/features/board/board-slice';
+import { fetchTasksV3 } from '@/features/task-management/task-management.slice';
+import useTabSearchParam from '@/hooks/useTabSearchParam';
 const { Dragger } = Upload;
 const { Text, Title } = Typography;
 const { Option } = Select;
@@ -242,6 +245,7 @@ const ImportCSVTemplate: React.FC<ImportCSVProps> = ({
 }) => {
   const { t } = useTranslation('project-view/import-csv-template');
   const dispatch = useAppDispatch();
+  const { tab } = useTabSearchParam();
   const { importCSVTemplateDrawerOpen, projectId } = useAppSelector(state => state.projectReducer);
 
   // Steps state
@@ -811,6 +815,13 @@ const ImportCSVTemplate: React.FC<ImportCSVProps> = ({
       if (response.done) {
         const importedCount = response.body?.imported_count || 0;
         message.success(`Successfully imported ${importedCount} tasks`);
+        
+        // Auto-refresh task list based on current tab
+        if (projectId) {
+          if (tab === 'board') dispatch(fetchBoardTaskGroups(projectId));
+          if (tab === 'tasks-list') dispatch(fetchTasksV3(projectId));
+        }
+        
         if (onImport) {
           await onImport(tasks);
         }
