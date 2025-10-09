@@ -110,47 +110,80 @@ interface ProjectTemplate {
   }>;
 }
 
-// Enhanced CSV parsing utility function with better error handling
+// Enhanced CSV parsing utility function with better error handling and multi-line support
 const parseCSV = (csvText: string): { data: Record<string, string>[]; errors: string[]; fields: string[] } => {
-  const lines = csvText.trim().split(/\r?\n/);
   const errors: string[] = [];
 
-  if (lines.length === 0) {
+  if (!csvText || csvText.trim().length === 0) {
     return { data: [], errors: ['Empty CSV file'], fields: [] };
   }
 
-  const parseCSVLine = (line: string): string[] => {
-    const result: string[] = [];
-    let current = '';
+  // Parse CSV with proper handling of quoted fields that may contain newlines
+  const parseCSVRows = (text: string): string[][] => {
+    const rows: string[][] = [];
+    let currentRow: string[] = [];
+    let currentField = '';
     let inQuotes = false;
     let i = 0;
 
-    while (i < line.length) {
-      const char = line[i];
-      
+    while (i < text.length) {
+      const char = text[i];
+      const nextChar = text[i + 1];
+
       if (char === '"') {
-        if (inQuotes && line[i + 1] === '"') {
-          current += '"';
+        if (inQuotes && nextChar === '"') {
+          // Escaped quote
+          currentField += '"';
           i += 2;
         } else {
+          // Toggle quote state
           inQuotes = !inQuotes;
           i++;
         }
       } else if (char === ',' && !inQuotes) {
-        result.push(current.trim());
-        current = '';
+        // Field separator
+        currentRow.push(currentField);
+        currentField = '';
+        i++;
+      } else if ((char === '\n' || char === '\r') && !inQuotes) {
+        // Row separator (only when not in quotes)
+        if (char === '\r' && nextChar === '\n') {
+          i++; // Skip \r in \r\n
+        }
+        if (currentField || currentRow.length > 0) {
+          currentRow.push(currentField);
+          if (currentRow.some(field => field.trim())) {
+            rows.push(currentRow);
+          }
+          currentRow = [];
+          currentField = '';
+        }
         i++;
       } else {
-        current += char;
+        // Regular character
+        currentField += char;
         i++;
       }
     }
-    
-    result.push(current.trim());
-    return result;
+
+    // Add last field and row
+    if (currentField || currentRow.length > 0) {
+      currentRow.push(currentField);
+      if (currentRow.some(field => field.trim())) {
+        rows.push(currentRow);
+      }
+    }
+
+    return rows;
   };
 
-  const headers = parseCSVLine(lines[0]).map(h => h.replace(/^"|"$/g, ''));
+  const rows = parseCSVRows(csvText);
+
+  if (rows.length === 0) {
+    return { data: [], errors: ['No data found in CSV'], fields: [] };
+  }
+
+  const headers = rows[0].map(h => h.trim());
   const fields = [...headers];
 
   if (headers.length === 0) {
@@ -159,11 +192,8 @@ const parseCSV = (csvText: string): { data: Record<string, string>[]; errors: st
 
   const data: Record<string, string>[] = [];
 
-  for (let i = 1; i < lines.length; i++) {
-    const line = lines[i].trim();
-    if (!line) continue;
-
-    const values = parseCSVLine(line).map(v => v.replace(/^"|"$/g, ''));
+  for (let i = 1; i < rows.length; i++) {
+    const values = rows[i];
 
     if (values.length !== headers.length) {
       errors.push(`Row ${i + 1}: Expected ${headers.length} columns, found ${values.length}`);
@@ -172,13 +202,39 @@ const parseCSV = (csvText: string): { data: Record<string, string>[]; errors: st
 
     const row: Record<string, string> = {};
     headers.forEach((header, index) => {
-      row[header] = values[index] || '';
+      row[header] = values[index]?.trim() || '';
     });
 
     data.push(row);
   }
 
   return { data, errors, fields };
+};
+
+// Utility function to validate and clean date values
+const cleanDateValue = (dateStr: string): string => {
+  if (!dateStr || dateStr.trim() === '') return '';
+  
+  const trimmed = dateStr.trim();
+  
+  // Check for invalid date patterns
+  if (trimmed.startsWith('0000-00-00') || 
+      trimmed === '0000-00-00' ||
+      trimmed === '00:00:00' ||
+      trimmed === '0') {
+    return '';
+  }
+  
+  // Try to parse the date
+  try {
+    const date = new Date(trimmed);
+    if (isNaN(date.getTime())) {
+      return '';
+    }
+    return trimmed;
+  } catch {
+    return '';
+  }
 };
 
 const ImportCSVTemplate: React.FC<ImportCSVProps> = ({
@@ -725,7 +781,7 @@ const ImportCSVTemplate: React.FC<ImportCSVProps> = ({
                   }
                   break;
                 case 'dueDate':
-                  task.dueDate = value;
+                  task.dueDate = cleanDateValue(value);
                   break;
                 case 'status':
                   // Map CSV status value to Worklenz status
