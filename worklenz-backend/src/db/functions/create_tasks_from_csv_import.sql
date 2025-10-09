@@ -20,21 +20,23 @@ DECLARE
   _assignee_email         text;
   _assignee_user_id       uuid;
   _team_member_id         uuid;
+  _project_member_id      uuid;
   _new_task_id            uuid;
   _team_id                uuid;
   _assignee_action        text;
+  _next_sort_order        integer;
 
   _default_priority_id    uuid;
   _default_status_id      uuid;
 
   _priorities_exist       boolean := false;
-  _project_statuses_exist boolean := false;
+  _statuses_exist         boolean := false;
   _team_members_exist     boolean := false;
   _tasks_assignees_exist  boolean := false;
 BEGIN
   -- Check which tables exist
-  SELECT EXISTS(SELECT 1 FROM information_schema.tables WHERE table_name = 'priorities' AND table_schema = 'public') INTO _priorities_exist;
-  SELECT EXISTS(SELECT 1 FROM information_schema.tables WHERE table_name = 'project_statuses' AND table_schema = 'public') INTO _project_statuses_exist;
+  SELECT EXISTS(SELECT 1 FROM information_schema.tables WHERE table_name = 'task_priorities' AND table_schema = 'public') INTO _priorities_exist;
+  SELECT EXISTS(SELECT 1 FROM information_schema.tables WHERE table_name = 'task_statuses' AND table_schema = 'public') INTO _statuses_exist;
   SELECT EXISTS(SELECT 1 FROM information_schema.tables WHERE table_name = 'team_members' AND table_schema = 'public') INTO _team_members_exist;
   SELECT EXISTS(SELECT 1 FROM information_schema.tables WHERE table_name = 'tasks_assignees' AND table_schema = 'public') INTO _tasks_assignees_exist;
 
@@ -56,29 +58,19 @@ BEGIN
     );
   END IF;
 
-  -- Get default priority (fallback: first active priority or any priority)
+  -- Get default priority (fallback: first priority by value)
   IF _priorities_exist THEN
     SELECT pr.id INTO _default_priority_id
-    FROM priorities pr
-    WHERE COALESCE(pr.is_active, true) = true
+    FROM task_priorities pr
     ORDER BY COALESCE(pr.value, 999), pr.name
     LIMIT 1;
-
-    -- If no active priority found, try any priority
-    IF _default_priority_id IS NULL THEN
-      SELECT pr.id INTO _default_priority_id
-      FROM priorities pr
-      ORDER BY pr.name
-      LIMIT 1;
-    END IF;
   END IF;
 
-  -- Get default status from project_statuses (fallback: first status for this project)
-  IF _project_statuses_exist THEN
-    SELECT ps.id INTO _default_status_id
-    FROM project_statuses ps
-    WHERE ps.project_id = _project_id
-    ORDER BY COALESCE(ps.sort_order, 999), ps.name
+  -- Get default status from task_statuses (fallback: first status)
+  IF _statuses_exist THEN
+    SELECT ts.id INTO _default_status_id
+    FROM task_statuses ts
+    ORDER BY ts.name
     LIMIT 1;
   END IF;
 
@@ -95,12 +87,12 @@ BEGIN
     );
   END IF;
 
-  IF _project_statuses_exist AND _default_status_id IS NULL THEN
+  IF _statuses_exist AND _default_status_id IS NULL THEN
     RETURN json_build_object(
       'success', false,
-      'message', 'No statuses found for this project. Please create at least one status.',
+      'message', 'No statuses found in database. Please create at least one status.',
       'body', json_build_object('imported_count', 0, 'created_tasks', '[]'::json),
-      'import_errors', json_build_array(json_build_object('error', 'No project statuses available')),
+      'import_errors', json_build_array(json_build_object('error', 'No statuses available')),
       'validation_warnings', '[]'::json,
       'done', true,
       'project_name', (SELECT p.name FROM projects p WHERE p.id = _project_id)
@@ -146,7 +138,7 @@ BEGIN
       IF _priorities_exist THEN
         SELECT pr.id
         INTO _priority_id
-        FROM priorities pr
+        FROM task_priorities pr
         WHERE lower(pr.name) = lower(_priority_name)
         LIMIT 1;
 
@@ -163,14 +155,13 @@ BEGIN
         END IF;
       END IF;
 
-      -- Resolve status by name from project_statuses (only if table exists)
+      -- Resolve status by name from task_statuses (only if table exists)
       _status_id := NULL;
-      IF _project_statuses_exist THEN
-        SELECT ps.id
+      IF _statuses_exist THEN
+        SELECT ts.id
         INTO _status_id
-        FROM project_statuses ps
-        WHERE ps.project_id = _project_id
-          AND lower(ps.name) = lower(_status_name)
+        FROM task_statuses ts
+        WHERE lower(ts.name) = lower(_status_name)
         LIMIT 1;
 
         -- Use default if not found
@@ -188,6 +179,7 @@ BEGIN
 
       -- Resolve assignee only when mapping existing users (not creating)
       _team_member_id := NULL;
+      _project_member_id := NULL;
       _assignee_user_id := NULL;
 
       IF _assignee_email IS NOT NULL AND _assignee_email <> '' AND _assignee_action <> 'create' THEN
@@ -201,7 +193,23 @@ BEGIN
           WHERE tm.user_id = _assignee_user_id
             AND tm.team_id = _team_id;
 
-          IF _team_member_id IS NULL THEN
+          IF _team_member_id IS NOT NULL THEN
+            -- Get project_member_id for this team member and project
+            SELECT pm.id INTO _project_member_id
+            FROM project_members pm
+            WHERE pm.team_member_id = _team_member_id
+              AND pm.project_id = _project_id;
+
+            IF _project_member_id IS NULL THEN
+              _warning_list := array_append(_warning_list, json_build_object(
+                'type', 'warning',
+                'field', 'assignee',
+                'message', 'User is not a member of this project',
+                'email', _assignee_email,
+                'task_name', _task_name
+              ));
+            END IF;
+          ELSE
             _warning_list := array_append(_warning_list, json_build_object(
               'type', 'warning',
               'field', 'assignee',
@@ -229,6 +237,12 @@ BEGIN
         END IF;
       END IF;
 
+      -- Get next available sort_order for this project
+      SELECT COALESCE(MAX(sort_order), -1) + 1
+      INTO _next_sort_order
+      FROM tasks
+      WHERE project_id = _project_id;
+
       -- Insert task with required priority_id and status_id
       INSERT INTO tasks (
         project_id,
@@ -236,6 +250,7 @@ BEGIN
         description,
         priority_id,
         status_id,
+        sort_order,
         end_date,
         reporter_id,
         created_at,
@@ -247,6 +262,7 @@ BEGIN
         NULLIF(_description, ''),
         _priority_id,  -- Now guaranteed to be non-null
         _status_id,    -- Now guaranteed to be non-null
+        _next_sort_order,
         _due_date,
         _created_by,
         NOW(),
@@ -254,16 +270,20 @@ BEGIN
       )
       RETURNING id INTO _new_task_id;
 
-      -- If team member resolved and tasks_assignees table exists, add task assignee
-      IF _team_member_id IS NOT NULL AND _tasks_assignees_exist THEN
+      -- If team member and project member resolved and tasks_assignees table exists, add task assignee
+      IF _team_member_id IS NOT NULL AND _project_member_id IS NOT NULL AND _tasks_assignees_exist THEN
         INSERT INTO tasks_assignees (
           task_id,
-          assignee_id,
+          project_member_id,
+          team_member_id,
+          assigned_by,
           created_at,
           updated_at
         ) VALUES (
           _new_task_id,
+          _project_member_id,
           _team_member_id,
+          _created_by,
           NOW(),
           NOW()
         );

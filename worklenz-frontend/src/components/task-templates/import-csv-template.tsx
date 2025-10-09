@@ -750,8 +750,9 @@ const ImportCSVTemplate: React.FC<ImportCSVProps> = ({
         userMappings,
         fieldMappings
       );
+      console.log('Response:', response);
 
-      if (response.success) {
+      if (response.done) {
         const importedCount = response.body?.imported_count || 0;
         message.success(`Successfully imported ${importedCount} tasks`);
         if (onImport) {

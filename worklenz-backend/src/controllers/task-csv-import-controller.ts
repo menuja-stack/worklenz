@@ -228,18 +228,23 @@ export default class TaskcsvimportController extends WorklenzControllerBase {
           }
         }
 
-        // Build email -> team_member_id map for assignee resolution
+        // Build email -> team_member_id and project_member_id map for assignee resolution
         let emailToTeamMemberId: Record<string, string> = {};
+        let emailToProjectMemberId: Record<string, string> = {};
         if (candidateEmails.length > 0) {
           const teamMembersQuery = `
-            SELECT tm.id AS team_member_id, LOWER(u.email) AS email
+            SELECT tm.id AS team_member_id, pm.id AS project_member_id, LOWER(u.email) AS email
             FROM team_members tm
             JOIN users u ON u.id = tm.user_id
-            WHERE tm.team_id = $1 AND LOWER(u.email) = ANY($2)
+            LEFT JOIN project_members pm ON pm.team_member_id = tm.id AND pm.project_id = $1
+            WHERE tm.team_id = $2 AND LOWER(u.email) = ANY($3)
           `;
-          const tmr = await client.query(teamMembersQuery, [teamId, candidateEmails]);
+          const tmr = await client.query(teamMembersQuery, [projectId, teamId, candidateEmails]);
           for (const row of tmr.rows) {
             emailToTeamMemberId[row.email] = row.team_member_id;
+            if (row.project_member_id) {
+              emailToProjectMemberId[row.email] = row.project_member_id;
+            }
           }
         }
 
@@ -250,11 +255,11 @@ export default class TaskcsvimportController extends WorklenzControllerBase {
           .map(t => (t.status || 'To Do').trim().toLowerCase())));
 
         const prRes = await client.query(
-          `SELECT LOWER(name) AS name, id FROM priorities WHERE LOWER(name) = ANY($1)`,
+          `SELECT LOWER(name) AS name, id FROM task_priorities WHERE LOWER(name) = ANY($1)`,
           [allPriorityNames]
         );
         const stRes = await client.query(
-          `SELECT LOWER(name) AS name, id FROM statuses WHERE LOWER(name) = ANY($1)`,
+          `SELECT LOWER(name) AS name, id FROM task_statuses WHERE LOWER(name) = ANY($1)`,
           [allStatusNames]
         );
         const priorityNameToId: Record<string, string> = {};
@@ -270,9 +275,16 @@ export default class TaskcsvimportController extends WorklenzControllerBase {
           const priorityId = priorityNameToId[(t.priority || 'Medium').trim().toLowerCase()] || null;
           const statusId = statusNameToId[(t.status || 'To Do').trim().toLowerCase()] || null;
           const endDate = t.dueDate && t.dueDate !== '' ? t.dueDate : null;
-          const teamMemberId = t.assignee && t.assignee.includes('@')
-            ? (emailToTeamMemberId[t.assignee.toLowerCase()] || null)
-            : null;
+          const assigneeEmail = t.assignee && t.assignee.includes('@') ? t.assignee.toLowerCase() : null;
+          const teamMemberId = assigneeEmail ? (emailToTeamMemberId[assigneeEmail] || null) : null;
+          const projectMemberId = assigneeEmail ? (emailToProjectMemberId[assigneeEmail] || null) : null;
+
+          // Get next available sort_order
+          const sortOrderRes = await client.query(
+            `SELECT COALESCE(MAX(sort_order), -1) + 1 AS next_sort_order FROM tasks WHERE project_id = $1`,
+            [projectId]
+          );
+          const nextSortOrder = sortOrderRes.rows[0].next_sort_order;
 
           const ins = await client.query(
             `INSERT INTO tasks (
@@ -281,12 +293,13 @@ export default class TaskcsvimportController extends WorklenzControllerBase {
               description,
               priority_id,
               status_id,
+              sort_order,
               end_date,
               reporter_id,
               created_at,
               updated_at
             ) VALUES (
-              $1, $2, $3, $4, $5, NULLIF($6,'')::date, $7, NOW(), NOW()
+              $1, $2, $3, $4, $5, $6, NULLIF($7,'')::date, $8, NOW(), NOW()
             ) RETURNING id`,
             [
               projectId,
@@ -294,6 +307,7 @@ export default class TaskcsvimportController extends WorklenzControllerBase {
               t.description || null,
               priorityId,
               statusId,
+              nextSortOrder,
               endDate,
               userId
             ]
@@ -301,11 +315,11 @@ export default class TaskcsvimportController extends WorklenzControllerBase {
           const newTaskId = ins.rows[0].id as string;
           insertedCount += 1;
 
-          if (teamMemberId) {
+          if (teamMemberId && projectMemberId) {
             await client.query(
-              `INSERT INTO tasks_assignees (task_id, assignee_id, created_at, updated_at)
-               VALUES ($1, $2, NOW(), NOW())`,
-              [newTaskId, teamMemberId]
+              `INSERT INTO tasks_assignees (task_id, project_member_id, team_member_id, assigned_by, created_at, updated_at)
+               VALUES ($1, $2, $3, $4, NOW(), NOW())`,
+              [newTaskId, projectMemberId, teamMemberId, userId]
             );
           }
         }
