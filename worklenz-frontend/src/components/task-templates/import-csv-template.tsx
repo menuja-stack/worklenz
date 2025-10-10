@@ -317,7 +317,7 @@ const ImportCSVTemplate: React.FC<ImportCSVProps> = ({
       icon: <ArrowRightOutlined />,
     },
     {
-      title: 'Map Values', // NEW STEP
+      title: t('steps.mapValues.title'),
       icon: <SettingOutlined />,
     },
     {
@@ -1072,15 +1072,15 @@ const ImportCSVTemplate: React.FC<ImportCSVProps> = ({
 
         return (
           <div>
-            <Title level={4}>Map Priority & Status Values</Title>
+            <Title level={4}>{t('mapValuesStep.title')}</Title>
             <Text type="secondary" style={{ marginBottom: 24, display: 'block' }}>
-              Map your CSV values to Worklenz priorities and statuses. This ensures your data is properly organized in the system.
+              {t('mapValuesStep.description')}
             </Text>
 
             {!hasPriorityMapping && !hasStatusMapping && (
               <Alert
-                message="No Priority or Status Fields Mapped"
-                description="You haven't mapped any Priority or Status fields in the previous step. You can skip this step or go back to add field mappings."
+                message={t('mapValuesStep.noMappingsNeeded.title')}
+                description={t('mapValuesStep.noMappingsNeeded.description')}
                 type="info"
                 showIcon
                 style={{ marginBottom: 16 }}
@@ -1092,14 +1092,14 @@ const ImportCSVTemplate: React.FC<ImportCSVProps> = ({
                 title={
                   <Space>
                     <SettingOutlined />
-                    Priority Value Mapping
+                    {t('mapValuesStep.priorityMapping.title')}
                   </Space>
                 }
                 size="small" 
                 style={{ marginBottom: 16 }}
               >
                 <Text type="secondary" style={{ display: 'block', marginBottom: 12 }}>
-                  Found {uniquePriorityValues.length} unique priority value(s) in your CSV. Map each to a Worklenz priority.
+                  {t('mapValuesStep.priorityMapping.description', { count: uniquePriorityValues.length })}
                 </Text>
 
                 <Table
@@ -1109,14 +1109,14 @@ const ImportCSVTemplate: React.FC<ImportCSVProps> = ({
                   size="small"
                   columns={[
                     {
-                      title: 'CSV Priority Value',
+                      title: t('mapValuesStep.priorityMapping.csvColumn'),
                       dataIndex: 'csvValue',
                       key: 'csvValue',
                       width: '30%',
                       render: (text) => <Tag color="blue" style={{ fontSize: '13px' }}>{text}</Tag>
                     },
                     {
-                      title: 'Sample Tasks',
+                      title: t('mapValuesStep.priorityMapping.sampleTasks'),
                       key: 'sampleTasks',
                       width: '30%',
                       render: (_, record) => {
@@ -1126,13 +1126,13 @@ const ImportCSVTemplate: React.FC<ImportCSVProps> = ({
                         const count = csvData.filter(row => row[priorityField] === record.csvValue).length;
                         return (
                           <Text type="secondary">
-                            {count} task{count !== 1 ? 's' : ''} with this priority
+                            {t('mapValuesStep.priorityMapping.taskCount', { count, plural: count !== 1 ? 's' : '' })}
                           </Text>
                         );
                       }
                     },
                     {
-                      title: 'Map to Worklenz Priority',
+                      title: t('mapValuesStep.priorityMapping.mapTo'),
                       key: 'mapping',
                       width: '40%',
                       render: (_, record) => (
@@ -1171,13 +1171,13 @@ const ImportCSVTemplate: React.FC<ImportCSVProps> = ({
                 title={
                   <Space>
                     <SettingOutlined />
-                    Status Value Mapping
+                    {t('mapValuesStep.statusMapping.title')}
                   </Space>
                 }
                 size="small"
               >
                 <Text type="secondary" style={{ display: 'block', marginBottom: 12 }}>
-                  Found {uniqueStatusValues.length} unique status value(s) in your CSV. Map each to a Worklenz status.
+                  {t('mapValuesStep.statusMapping.description', { count: uniqueStatusValues.length })}
                 </Text>
 
                 <Table
@@ -1187,14 +1187,14 @@ const ImportCSVTemplate: React.FC<ImportCSVProps> = ({
                   size="small"
                   columns={[
                     {
-                      title: 'CSV Status Value',
+                      title: t('mapValuesStep.statusMapping.csvColumn'),
                       dataIndex: 'csvValue',
                       key: 'csvValue',
                       width: '30%',
                       render: (text) => <Tag color="cyan" style={{ fontSize: '13px' }}>{text}</Tag>
                     },
                     {
-                      title: 'Sample Tasks',
+                      title: t('mapValuesStep.statusMapping.sampleTasks'),
                       key: 'sampleTasks',
                       width: '30%',
                       render: (_, record) => {
@@ -1204,13 +1204,13 @@ const ImportCSVTemplate: React.FC<ImportCSVProps> = ({
                         const count = csvData.filter(row => row[statusField] === record.csvValue).length;
                         return (
                           <Text type="secondary">
-                            {count} task{count !== 1 ? 's' : ''} with this status
+                            {t('mapValuesStep.statusMapping.taskCount', { count, plural: count !== 1 ? 's' : '' })}
                           </Text>
                         );
                       }
                     },
                     {
-                      title: 'Map to Worklenz Status',
+                      title: t('mapValuesStep.statusMapping.mapTo'),
                       key: 'mapping',
                       width: '40%',
                       render: (_, record) => (
@@ -1247,8 +1247,8 @@ const ImportCSVTemplate: React.FC<ImportCSVProps> = ({
             {(hasPriorityMapping || hasStatusMapping) && (
               <Alert
                 style={{ marginTop: 16 }}
-                message="Value Mapping Required"
-                description="All priority and status values from your CSV must be mapped to continue. This ensures data consistency in your project."
+                message={t('mapValuesStep.requirements.title')}
+                description={t('mapValuesStep.requirements.description')}
                 type="warning"
                 showIcon
               />
@@ -1475,11 +1475,11 @@ const ImportCSVTemplate: React.FC<ImportCSVProps> = ({
             {valueMappings.length > 0 && (
               <Row gutter={16} style={{ marginTop: 16 }}>
                 <Col span={24}>
-                  <Card title="Value Mappings Summary" size="small">
+                  <Card title={t('reviewStep.valueMappings.title')} size="small">
                     <Row gutter={16}>
                       {valueMappings.filter(vm => vm.fieldType === 'priority').length > 0 && (
                         <Col span={12}>
-                          <Text strong style={{ display: 'block', marginBottom: 8 }}>Priority Mappings:</Text>
+                          <Text strong style={{ display: 'block', marginBottom: 8 }}>{t('reviewStep.valueMappings.priorityMappings')}</Text>
                           {valueMappings.filter(vm => vm.fieldType === 'priority').map(vm => (
                             <div key={vm.csvValue} style={{ marginBottom: 4 }}>
                               <Tag color="blue">{vm.csvValue}</Tag>
@@ -1494,7 +1494,7 @@ const ImportCSVTemplate: React.FC<ImportCSVProps> = ({
                       )}
                       {valueMappings.filter(vm => vm.fieldType === 'status').length > 0 && (
                         <Col span={12}>
-                          <Text strong style={{ display: 'block', marginBottom: 8 }}>Status Mappings:</Text>
+                          <Text strong style={{ display: 'block', marginBottom: 8 }}>{t('reviewStep.valueMappings.statusMappings')}</Text>
                           {valueMappings.filter(vm => vm.fieldType === 'status').map(vm => (
                             <div key={vm.csvValue} style={{ marginBottom: 4 }}>
                               <Tag color="cyan">{vm.csvValue}</Tag>

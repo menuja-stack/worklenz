@@ -12,6 +12,9 @@
     "mapFields": {
       "title": "Map Fields"
     },
+    "mapValues": {
+      "title": "Map Values"
+    },
     "moveUsers": {
       "title": "Move Users"
     },
@@ -90,6 +93,34 @@
       "description": "These values will be used if 'Priority' or 'Status' are not mapped from your CSV."
     }
   },
+  "mapValuesStep": {
+    "title": "Map Priority & Status Values",
+    "description": "Map your CSV values to Worklenz priorities and statuses. This ensures your data is properly organized in the system.",
+    "noMappingsNeeded": {
+      "title": "No Priority or Status Fields Mapped",
+      "description": "You haven't mapped any Priority or Status fields in the previous step. You can skip this step or go back to add field mappings."
+    },
+    "priorityMapping": {
+      "title": "Priority Value Mapping",
+      "description": "Found {{count}} unique priority value(s) in your CSV. Map each to a Worklenz priority.",
+      "csvColumn": "CSV Priority Value",
+      "sampleTasks": "Sample Tasks",
+      "taskCount": "{{count}} task{{plural}} with this priority",
+      "mapTo": "Map to Worklenz Priority"
+    },
+    "statusMapping": {
+      "title": "Status Value Mapping",
+      "description": "Found {{count}} unique status value(s) in your CSV. Map each to a Worklenz status.",
+      "csvColumn": "CSV Status Value",
+      "sampleTasks": "Sample Tasks",
+      "taskCount": "{{count}} task{{plural}} with this status",
+      "mapTo": "Map to Worklenz Status"
+    },
+    "requirements": {
+      "title": "Value Mapping Required",
+      "description": "All priority and status values from your CSV must be mapped to continue. This ensures data consistency in your project."
+    }
+  },
   "moveUsersStep": {
     "title": "Move Users",
     "description": "Handle user assignments found in your CSV. You can create new users, map to existing users, or skip assignments.",
@@ -139,6 +170,11 @@
       "create": "Create: {{email}}",
       "map": "Map: {{user}}",
       "noMappings": "No user mappings needed"
+    },
+    "valueMappings": {
+      "title": "Value Mappings Summary",
+      "priorityMappings": "Priority Mappings:",
+      "statusMappings": "Status Mappings:"
     },
     "sampleData": {
       "title": "Sample Import Data",

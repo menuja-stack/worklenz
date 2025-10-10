@@ -1,5 +1,5 @@
 {
-  "title": "导入 CSV 到 Worklenz",
+  "title": "导入CSV到Worklenz",
   "cancel": "取消",
   "import": "导入",
   "remove": "移除",
@@ -7,140 +7,224 @@
   "next": "下一步",
   "steps": {
     "uploadCsv": {
-      "title": "上传 CSV"
+      "title": "上传CSV"
     },
     "mapFields": {
       "title": "映射字段"
     },
+    "mapValues": {
+      "title": "映射值"
+    },
     "moveUsers": {
-      "title": "迁移用户"
+      "title": "移动用户"
     },
     "reviewImport": {
-      "title": "检查并导入"
+      "title": "审查并导入"
     }
   },
   "uploadStep": {
-    "title": "上传 CSV 文件",
-    "description": "上传包含您要导入到 Worklenz 的数据的 CSV 文件。",
+    "title": "上传CSV文件",
+    "description": "上传包含要导入到Worklenz的数据的CSV文件。",
     "uploadArea": {
       "dragText": "点击或拖拽文件到此区域上传",
-      "hint": "仅支持 CSV 文件，最大 10 MB。"
+      "hint": "仅支持CSV文件。最大文件大小10MB。"
     },
     "processing": {
-      "text": "正在处理 CSV 文件...",
-      "successMessage": "找到 {{rowCount}} 行 和 {{columnCount}} 列",
+      "text": "正在处理CSV文件...",
+      "successMessage": "找到{{rowCount}}行和{{columnCount}}列",
       "columnsLabel": "列：",
-      "failedToRead": "无法读取文件内容",
-      "parsingErrors": "解析 CSV 时发现错误",
-      "failedToParse": "无法解析 CSV 文件",
-      "failedToProcess": "无法处理 CSV 文件",
-      "emptyFile": "CSV 文件为空",
-      "noDataFound": "CSV 中未找到数据"
+      "failedToRead": "读取文件内容失败",
+      "parsingErrors": "发现CSV解析错误",
+      "failedToParse": "解析CSV文件失败",
+      "failedToProcess": "处理CSV文件失败",
+      "emptyFile": "空CSV文件",
+      "noDataFound": "CSV中未找到数据"
     },
     "preview": {
-      "title": "CSV 预览",
-      "foundData": "找到 {{rowCount}} 行 和 {{columnCount}} 列"
+      "title": "CSV预览",
+      "foundData": "找到{{rowCount}}行和{{columnCount}}列",
+      "columnsLabel": "列："
     },
     "errors": {
-      "title": "CSV 解析错误",
-      "expectedColumns": "第 {{row}} 行：预期 {{expected}} 列，实际找到 {{found}} 列"
+      "title": "CSV解析错误",
+      "expectedColumns": "第{{row}}行：期望{{expected}}列，找到{{found}}列"
+    },
+    "loadingTemplate": "正在加载项目模板数据...",
+    "validationSummary": {
+      "title": "验证完成，有{{count}}个警告",
+      "moreWarnings": "...还有{{count}}个",
+      "status": "验证状态",
+      "validTasks": "有效任务",
+      "errors": "错误"
     }
   },
   "mapFieldsStep": {
     "title": "映射字段",
-    "description": "将您的 CSV 列映射到 Worklenz 字段。每个 Worklenz 字段只能映射一次。至少需要映射一个字段为“任务名称”。",
+    "description": "将CSV列映射到Worklenz字段。每个Worklenz字段只能映射一次。至少一个字段必须映射到"任务名称"。",
     "table": {
-      "csvColumn": "CSV 列",
+      "csvColumn": "CSV列",
       "sampleData": "示例数据",
-      "mapToField": "映射到 Worklenz 字段",
+      "mapToField": "映射到Worklenz字段",
       "status": "状态",
-      "selectPlaceholder": "选择字段进行映射",
+      "selectPlaceholder": "选择要映射的字段",
       "alreadyMapped": "（已映射）",
       "mapped": "已映射",
       "notMapped": "未映射"
     },
     "requirements": {
-      "title": "映射要求",
-      "description": "至少需要将一个 CSV 列映射到“任务名称”字段才能继续。每个 Worklenz 字段只能映射到一个 CSV 列。"
+      "title": "字段映射要求",
+      "description": "至少一个CSV列必须映射到"任务名称"字段才能继续。这是创建任务所必需的。"
     },
     "worklenzFields": {
       "name": "任务名称",
       "description": "描述",
       "priority": "优先级",
-      "assignee": "负责人",
+      "assignee": "指派人",
       "dueDate": "截止日期",
       "status": "状态",
       "labels": "标签",
-      "storyPoints": "故事点",
-      "epic": "史诗"
+      "estimation": "预估",
+      "startDate": "开始日期",
+      "reporter": "报告人"
+    },
+    "defaults": {
+      "priority": "所有任务的默认优先级",
+      "status": "所有任务的默认状态",
+      "description": "如果CSV中未映射"优先级"或"状态"，将使用这些值。"
+    }
+  },
+  "mapValuesStep": {
+    "title": "映射优先级和状态值",
+    "description": "将CSV值映射到Worklenz优先级和状态。这确保您的数据在系统中正确组织。",
+    "noMappingsNeeded": {
+      "title": "未映射优先级或状态字段",
+      "description": "您在上一步中没有映射任何优先级或状态字段。您可以跳过此步骤或返回添加字段映射。"
+    },
+    "priorityMapping": {
+      "title": "优先级值映射",
+      "description": "在您的CSV中找到{{count}}个唯一优先级值。将每个映射到Worklenz优先级。",
+      "csvColumn": "CSV优先级值",
+      "sampleTasks": "示例任务",
+      "taskCount": "{{count}}个具有此优先级的任务{{plural}}",
+      "mapTo": "映射到Worklenz优先级"
+    },
+    "statusMapping": {
+      "title": "状态值映射",
+      "description": "在您的CSV中找到{{count}}个唯一状态值。将每个映射到Worklenz状态。",
+      "csvColumn": "CSV状态值",
+      "sampleTasks": "示例任务",
+      "taskCount": "{{count}}个具有此状态的任务{{plural}}",
+      "mapTo": "映射到Worklenz状态"
+    },
+    "requirements": {
+      "title": "需要值映射",
+      "description": "必须映射CSV中的所有优先级和状态值才能继续。这确保项目中的数据一致性。"
     }
   },
   "moveUsersStep": {
-    "title": "迁移用户",
-    "description": "管理在您的 CSV 中找到的用户分配。您可以创建新用户、映射到现有用户或跳过分配。",
+    "title": "移动用户",
+    "description": "处理CSV中找到的用户分配。您可以创建新用户、映射到现有用户或跳过分配。",
     "noUsers": {
-      "title": "未找到用户",
-      "description": "您的 CSV 数据中未找到用户分配。"
+      "title": "CSV中未找到用户",
+      "description": "CSV文件中未检测到指派人数据。任务将在没有指派人的情况下导入。"
     },
     "table": {
-      "userInCsv": "CSV 中的用户",
+      "userInCsv": "CSV中的用户",
       "action": "操作",
-      "mapToUser": "映射到 Worklenz 用户",
+      "mapToUser": "映射到用户",
       "status": "状态",
       "selectExistingUser": "选择现有用户",
-      "enterEmailForNewUser": "输入新用户邮箱"
+      "enterEmailForNewUser": "输入新用户的电子邮件"
     },
     "actions": {
       "createUser": "创建用户",
-      "mapToExisting": "映射到现有用户",
+      "mapToExisting": "映射到现有",
       "skip": "跳过"
     },
     "statuses": {
       "skipped": "已跳过",
       "readyToCreate": "准备创建",
-      "emailRequired": "需要邮箱",
+      "emailRequired": "需要电子邮件",
       "mapped": "已映射",
       "mappingRequired": "需要映射"
-    }
+    },
+    "availableMembers": "可用团队成员：",
+    "loadingMembers": "正在加载团队成员..."
   },
   "reviewStep": {
-    "title": "检查并导入",
-    "description": "检查您的导入配置并开始导入过程。",
+    "title": "审查并导入",
+    "description": "审查您的导入配置并开始导入过程。",
     "summary": {
       "title": "导入摘要",
-      "csvRows": "CSV 行数",
+      "csvRows": "CSV行",
       "mappedFields": "已映射字段",
-      "usersToCreate": "待创建用户",
-      "tasksToImport": "待导入任务"
+      "usersToCreate": "要创建的用户",
+      "tasksToImport": "要导入的任务"
     },
     "fieldMappings": {
       "title": "字段映射",
       "noMappings": "未配置字段映射"
+    },
+    "userMappings": {
+      "title": "用户映射",
+      "create": "创建：{{email}}",
+      "map": "映射：{{user}}",
+      "noMappings": "不需要用户映射"
+    },
+    "valueMappings": {
+      "title": "值映射摘要",
+      "priorityMappings": "优先级映射：",
+      "statusMappings": "状态映射："
+    },
+    "sampleData": {
+      "title": "示例导入数据",
+      "description": "将要导入的前3个任务的预览：",
+      "taskLabel": "任务{{index}}：",
+      "noName": "<无名称>",
+      "descriptionLabel": "描述：",
+      "moreTasks": "...还有{{count}}个任务"
     }
   },
   "messages": {
     "success": {
-      "csvParsed": "成功解析 {{count}} 行 CSV 数据",
-      "tasksImported": "成功导入 {{count}} 个任务"
+      "csvParsed": "成功解析CSV中的{{count}}行",
+      "tasksImported": "成功导入{{count}}个任务"
     },
     "warning": {
-      "validationErrors": "发现 {{count}} 个验证错误",
-      "noValidTasks": "CSV 中未找到有效任务"
+      "validationErrors": "找到{{count}}个验证错误",
+      "noValidTasks": "CSV中未找到有效任务",
+      "validationFailed": "验证失败"
     },
     "error": {
-      "failedToReadFile": "无法读取文件内容",
-      "csvParsingErrors": "解析 CSV 时发现错误",
-      "csvFormatValidation": "CSV 格式验证失败",
-      "failedToParseFile": "无法解析 CSV 文件",
-      "failedToProcessFile": "无法处理 CSV 文件",
-      "failedToImportTasks": "导入任务失败：{{error}}"
+      "failedToReadFile": "读取文件内容失败",
+      "csvParsingErrors": "发现CSV解析错误：{{count}}个错误",
+      "csvFormatValidation": "CSV格式验证失败",
+      "failedToParseFile": "解析CSV文件失败",
+      "failedToProcessFile": "处理CSV文件失败",
+      "failedToImportTasks": "导入任务失败：{{error}}",
+      "failedToLoadTemplate": "加载项目模板数据失败"
     }
   },
   "validation": {
-    "nameRequired": "第 {{row}} 行：任务名称必填",
-    "invalidPriority": "第 {{row}} 行：无效的优先级 '{{priority}}'。必须为以下之一：{{validPriorities}}",
-    "invalidDateFormat": "第 {{row}} 行：截止日期必须为 YYYY-MM-DD 格式",
-    "csvMustContainName": "CSV 必须包含 'name' 列",
-    "unknownColumns": "发现未知列：{{columns}}"
+    "nameRequired": "第{{row}}行：名称是必需的",
+    "invalidPriority": "第{{row}}行：无效的优先级"{{priority}}"。必须是以下之一：{{validPriorities}}",
+    "invalidDateFormat": "第{{row}}行：截止日期必须为YYYY-MM-DD格式",
+    "csvMustContainName": "CSV必须包含"名称"列",
+    "unknownColumns": "找到未知列：{{columns}}"
+  },
+  "memberMapping": {
+    "selectPlaceholder": "选择团队成员"
+  },
+  "modal": {
+    "title": "导入CSV任务",
+    "importButton": "导入（{{count}}个任务）"
+  },
+  "common": {
+    "of": "/",
+    "columns": "列"
+  },
+  "errors": {
+    "projectIdRequired": "需要项目ID",
+    "unknownError": "发生未知错误"
   }
 }

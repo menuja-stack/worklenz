@@ -12,6 +12,9 @@
     "mapFields": {
       "title": "Felder zuordnen"
     },
+    "mapValues": {
+      "title": "Werte zuordnen"
+    },
     "moveUsers": {
       "title": "Benutzer verschieben"
     },
@@ -23,76 +26,119 @@
     "title": "CSV-Datei hochladen",
     "description": "Laden Sie Ihre CSV-Datei hoch, die die Daten enthält, die Sie in Worklenz importieren möchten.",
     "uploadArea": {
-      "dragText": "Klicken oder Datei hierher ziehen, um hochzuladen",
-      "hint": "Nur CSV-Dateien werden unterstützt. Maximale Dateigröße 10 MB."
+      "dragText": "Klicken oder ziehen Sie die Datei in diesen Bereich zum Hochladen",
+      "hint": "Unterstützung nur für CSV-Dateien. Maximale Dateigröße 10MB."
     },
     "processing": {
       "text": "CSV-Datei wird verarbeitet...",
       "successMessage": "{{rowCount}} Zeilen und {{columnCount}} Spalten gefunden",
       "columnsLabel": "Spalten:",
-      "failedToRead": "Dateiinhalt konnte nicht gelesen werden",
-      "parsingErrors": "Fehler beim Analysieren der CSV gefunden",
-      "failedToParse": "CSV-Datei konnte nicht analysiert werden",
-      "failedToProcess": "CSV-Datei konnte nicht verarbeitet werden",
-      "emptyFile": "CSV-Datei ist leer",
-      "noDataFound": "Keine Daten in der CSV gefunden"
+      "failedToRead": "Fehler beim Lesen des Dateiinhalts",
+      "parsingErrors": "CSV-Parsing-Fehler gefunden",
+      "failedToParse": "Fehler beim Parsen der CSV-Datei",
+      "failedToProcess": "Fehler beim Verarbeiten der CSV-Datei",
+      "emptyFile": "Leere CSV-Datei",
+      "noDataFound": "Keine Daten in CSV gefunden"
     },
     "preview": {
       "title": "CSV-Vorschau",
-      "foundData": "{{rowCount}} Zeilen und {{columnCount}} Spalten gefunden"
+      "foundData": "{{rowCount}} Zeilen und {{columnCount}} Spalten gefunden",
+      "columnsLabel": "Spalten:"
     },
     "errors": {
-      "title": "CSV-Analysefehler",
-      "expectedColumns": "Zeile {{row}}: Erwartet {{expected}} Spalten, gefunden {{found}}"
+      "title": "CSV-Parsing-Fehler",
+      "expectedColumns": "Zeile {{row}}: {{expected}} Spalten erwartet, {{found}} gefunden"
+    },
+    "loadingTemplate": "Projektvorlagendaten werden geladen...",
+    "validationSummary": {
+      "title": "Validierung mit {{count}} Warnungen abgeschlossen",
+      "moreWarnings": "... und {{count}} weitere",
+      "status": "Validierungsstatus",
+      "validTasks": "Gültige Aufgaben",
+      "errors": "Fehler"
     }
   },
   "mapFieldsStep": {
     "title": "Felder zuordnen",
-    "description": "Ordnen Sie Ihre CSV-Spalten den Worklenz-Feldern zu. Jedes Worklenz-Feld kann nur einmal zugeordnet werden. Mindestens ein Feld muss dem „Aufgabenname“ zugeordnet sein.",
+    "description": "Ordnen Sie Ihre CSV-Spalten den Worklenz-Feldern zu. Jedes Worklenz-Feld kann nur einmal zugeordnet werden. Mindestens ein Feld muss \"Aufgabenname\" zugeordnet werden.",
     "table": {
       "csvColumn": "CSV-Spalte",
       "sampleData": "Beispieldaten",
-      "mapToField": "Zu Worklenz-Feld zuordnen",
+      "mapToField": "Worklenz-Feld zuordnen",
       "status": "Status",
-      "selectPlaceholder": "Feld auswählen",
+      "selectPlaceholder": "Feld zum Zuordnen auswählen",
       "alreadyMapped": "(Bereits zugeordnet)",
       "mapped": "Zugeordnet",
       "notMapped": "Nicht zugeordnet"
     },
     "requirements": {
-      "title": "Zuordnungsanforderungen",
-      "description": "Mindestens eine CSV-Spalte muss dem Feld 'Aufgabenname' zugeordnet sein, um fortzufahren. Jedes Worklenz-Feld kann nur einer CSV-Spalte zugeordnet werden."
+      "title": "Anforderungen an die Feldzuordnung",
+      "description": "Mindestens eine CSV-Spalte muss dem Feld 'Aufgabenname' zugeordnet werden, um fortzufahren. Dies ist zum Erstellen von Aufgaben erforderlich."
     },
     "worklenzFields": {
       "name": "Aufgabenname",
       "description": "Beschreibung",
       "priority": "Priorität",
-      "assignee": "Zugewiesen an",
+      "assignee": "Bearbeiter",
       "dueDate": "Fälligkeitsdatum",
       "status": "Status",
       "labels": "Labels",
-      "storyPoints": "Story Points",
-      "epic": "Epic"
+      "estimation": "Schätzung",
+      "startDate": "Startdatum",
+      "reporter": "Ersteller"
+    },
+    "defaults": {
+      "priority": "Standardpriorität für alle Aufgaben",
+      "status": "Standardstatus für alle Aufgaben",
+      "description": "Diese Werte werden verwendet, wenn 'Priorität' oder 'Status' nicht aus Ihrer CSV zugeordnet sind."
+    }
+  },
+  "mapValuesStep": {
+    "title": "Prioritäts- und Statuswerte zuordnen",
+    "description": "Ordnen Sie Ihre CSV-Werte den Worklenz-Prioritäten und -Status zu. Dies stellt sicher, dass Ihre Daten im System richtig organisiert sind.",
+    "noMappingsNeeded": {
+      "title": "Keine Prioritäts- oder Statusfelder zugeordnet",
+      "description": "Sie haben im vorherigen Schritt keine Prioritäts- oder Statusfelder zugeordnet. Sie können diesen Schritt überspringen oder zurückgehen, um Feldzuordnungen hinzuzufügen."
+    },
+    "priorityMapping": {
+      "title": "Prioritätswert-Zuordnung",
+      "description": "{{count}} eindeutige Prioritätswert(e) in Ihrer CSV gefunden. Ordnen Sie jeden einem Worklenz-Priorität zu.",
+      "csvColumn": "CSV-Prioritätswert",
+      "sampleTasks": "Beispielaufgaben",
+      "taskCount": "{{count}} Aufgabe{{plural}} mit dieser Priorität",
+      "mapTo": "Worklenz-Priorität zuordnen"
+    },
+    "statusMapping": {
+      "title": "Statuswert-Zuordnung",
+      "description": "{{count}} eindeutige Statuswert(e) in Ihrer CSV gefunden. Ordnen Sie jeden einem Worklenz-Status zu.",
+      "csvColumn": "CSV-Statuswert",
+      "sampleTasks": "Beispielaufgaben",
+      "taskCount": "{{count}} Aufgabe{{plural}} mit diesem Status",
+      "mapTo": "Worklenz-Status zuordnen"
+    },
+    "requirements": {
+      "title": "Wertzuordnung erforderlich",
+      "description": "Alle Prioritäts- und Statuswerte aus Ihrer CSV müssen zugeordnet werden, um fortzufahren. Dies gewährleistet Datenkonsistenz in Ihrem Projekt."
     }
   },
   "moveUsersStep": {
     "title": "Benutzer verschieben",
-    "description": "Bearbeiten Sie Benutzerzuweisungen, die in Ihrer CSV gefunden wurden. Sie können neue Benutzer erstellen, mit bestehenden Benutzern abgleichen oder die Zuweisung überspringen.",
+    "description": "Verwalten Sie Benutzerzuweisungen, die in Ihrer CSV gefunden wurden. Sie können neue Benutzer erstellen, bestehenden Benutzern zuordnen oder Zuweisungen überspringen.",
     "noUsers": {
-      "title": "Keine Benutzer gefunden",
-      "description": "In Ihren CSV-Daten wurden keine Benutzerzuweisungen gefunden."
+      "title": "Keine Benutzer in CSV gefunden",
+      "description": "Es wurden keine Bearbeiterdaten in Ihrer CSV-Datei erkannt. Aufgaben werden ohne Bearbeiter importiert."
     },
     "table": {
       "userInCsv": "Benutzer in CSV",
       "action": "Aktion",
-      "mapToUser": "Zu Worklenz-Benutzer zuordnen",
+      "mapToUser": "Benutzer zuordnen",
       "status": "Status",
       "selectExistingUser": "Bestehenden Benutzer auswählen",
       "enterEmailForNewUser": "E-Mail für neuen Benutzer eingeben"
     },
     "actions": {
       "createUser": "Benutzer erstellen",
-      "mapToExisting": "Zu bestehendem zuordnen",
+      "mapToExisting": "Bestehendem zuordnen",
       "skip": "Überspringen"
     },
     "statuses": {
@@ -101,13 +147,15 @@
       "emailRequired": "E-Mail erforderlich",
       "mapped": "Zugeordnet",
       "mappingRequired": "Zuordnung erforderlich"
-    }
+    },
+    "availableMembers": "Verfügbare Teammitglieder:",
+    "loadingMembers": "Teammitglieder werden geladen..."
   },
   "reviewStep": {
     "title": "Überprüfen & Importieren",
-    "description": "Überprüfen Sie Ihre Importkonfiguration und starten Sie den Importprozess.",
+    "description": "Überprüfen Sie Ihre Importkonfiguration und starten Sie den Importvorgang.",
     "summary": {
-      "title": "Importübersicht",
+      "title": "Import-Zusammenfassung",
       "csvRows": "CSV-Zeilen",
       "mappedFields": "Zugeordnete Felder",
       "usersToCreate": "Zu erstellende Benutzer",
@@ -116,31 +164,67 @@
     "fieldMappings": {
       "title": "Feldzuordnungen",
       "noMappings": "Keine Feldzuordnungen konfiguriert"
+    },
+    "userMappings": {
+      "title": "Benutzerzuordnungen",
+      "create": "Erstellen: {{email}}",
+      "map": "Zuordnen: {{user}}",
+      "noMappings": "Keine Benutzerzuordnungen erforderlich"
+    },
+    "valueMappings": {
+      "title": "Wertzuordnungen Zusammenfassung",
+      "priorityMappings": "Prioritätszuordnungen:",
+      "statusMappings": "Statuszuordnungen:"
+    },
+    "sampleData": {
+      "title": "Beispiel-Importdaten",
+      "description": "Vorschau der ersten 3 Aufgaben, die importiert werden:",
+      "taskLabel": "Aufgabe {{index}}:",
+      "noName": "<Kein Name>",
+      "descriptionLabel": "Beschreibung:",
+      "moreTasks": "... und {{count}} weitere Aufgaben"
     }
   },
   "messages": {
     "success": {
-      "csvParsed": "{{count}} Zeilen erfolgreich aus CSV analysiert",
+      "csvParsed": "{{count}} Zeilen aus CSV erfolgreich geparst",
       "tasksImported": "{{count}} Aufgaben erfolgreich importiert"
     },
     "warning": {
       "validationErrors": "{{count}} Validierungsfehler gefunden",
-      "noValidTasks": "Keine gültigen Aufgaben in CSV gefunden"
+      "noValidTasks": "Keine gültigen Aufgaben in CSV gefunden",
+      "validationFailed": "Validierung fehlgeschlagen"
     },
     "error": {
-      "failedToReadFile": "Dateiinhalt konnte nicht gelesen werden",
-      "csvParsingErrors": "Fehler beim Analysieren der CSV gefunden",
+      "failedToReadFile": "Fehler beim Lesen des Dateiinhalts",
+      "csvParsingErrors": "CSV-Parsing-Fehler gefunden: {{count}} Fehler",
       "csvFormatValidation": "CSV-Formatvalidierung fehlgeschlagen",
-      "failedToParseFile": "CSV-Datei konnte nicht analysiert werden",
-      "failedToProcessFile": "CSV-Datei konnte nicht verarbeitet werden",
-      "failedToImportTasks": "Fehler beim Importieren der Aufgaben: {{error}}"
+      "failedToParseFile": "Fehler beim Parsen der CSV-Datei",
+      "failedToProcessFile": "Fehler beim Verarbeiten der CSV-Datei",
+      "failedToImportTasks": "Fehler beim Importieren von Aufgaben: {{error}}",
+      "failedToLoadTemplate": "Fehler beim Laden der Projektvorlagendaten"
     }
   },
   "validation": {
     "nameRequired": "Zeile {{row}}: Name ist erforderlich",
     "invalidPriority": "Zeile {{row}}: Ungültige Priorität '{{priority}}'. Muss eine der folgenden sein: {{validPriorities}}",
     "invalidDateFormat": "Zeile {{row}}: Fälligkeitsdatum muss im Format JJJJ-MM-TT sein",
-    "csvMustContainName": "CSV muss eine 'name'-Spalte enthalten",
+    "csvMustContainName": "CSV muss eine 'Name'-Spalte enthalten",
     "unknownColumns": "Unbekannte Spalten gefunden: {{columns}}"
+  },
+  "memberMapping": {
+    "selectPlaceholder": "Teammitglied auswählen"
+  },
+  "modal": {
+    "title": "CSV-Aufgaben importieren",
+    "importButton": "Importieren ({{count}} Aufgaben)"
+  },
+  "common": {
+    "of": "von",
+    "columns": "Spalten"
+  },
+  "errors": {
+    "projectIdRequired": "Projekt-ID ist erforderlich",
+    "unknownError": "Unbekannter Fehler aufgetreten"
   }
 }

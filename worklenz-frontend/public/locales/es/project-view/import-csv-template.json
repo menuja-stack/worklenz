@@ -12,6 +12,9 @@
     "mapFields": {
       "title": "Mapear Campos"
     },
+    "mapValues": {
+      "title": "Mapear Valores"
+    },
     "moveUsers": {
       "title": "Mover Usuarios"
     },
@@ -21,74 +24,117 @@
   },
   "uploadStep": {
     "title": "Subir Archivo CSV",
-    "description": "Sube tu archivo CSV que contiene los datos que deseas importar en Worklenz.",
+    "description": "Suba su archivo CSV que contiene los datos que desea importar a Worklenz.",
     "uploadArea": {
-      "dragText": "Haz clic o arrastra el archivo a esta área para subirlo",
-      "hint": "Solo se admiten archivos CSV. Tamaño máximo de archivo 10 MB."
+      "dragText": "Haga clic o arrastre el archivo a esta área para subirlo",
+      "hint": "Solo se admiten archivos CSV. Tamaño máximo de archivo 10MB."
     },
     "processing": {
       "text": "Procesando archivo CSV...",
       "successMessage": "Se encontraron {{rowCount}} filas y {{columnCount}} columnas",
       "columnsLabel": "Columnas:",
-      "failedToRead": "No se pudo leer el contenido del archivo",
+      "failedToRead": "Error al leer el contenido del archivo",
       "parsingErrors": "Se encontraron errores al analizar el CSV",
-      "failedToParse": "No se pudo analizar el archivo CSV",
-      "failedToProcess": "No se pudo procesar el archivo CSV",
-      "emptyFile": "El archivo CSV está vacío",
+      "failedToParse": "Error al analizar el archivo CSV",
+      "failedToProcess": "Error al procesar el archivo CSV",
+      "emptyFile": "Archivo CSV vacío",
       "noDataFound": "No se encontraron datos en el CSV"
     },
     "preview": {
       "title": "Vista Previa del CSV",
-      "foundData": "Se encontraron {{rowCount}} filas y {{columnCount}} columnas"
+      "foundData": "Se encontraron {{rowCount}} filas y {{columnCount}} columnas",
+      "columnsLabel": "Columnas:"
     },
     "errors": {
-      "title": "Errores al Analizar CSV",
+      "title": "Errores de Análisis del CSV",
       "expectedColumns": "Fila {{row}}: Se esperaban {{expected}} columnas, se encontraron {{found}}"
+    },
+    "loadingTemplate": "Cargando datos de plantilla del proyecto...",
+    "validationSummary": {
+      "title": "Validación completada con {{count}} advertencias",
+      "moreWarnings": "... y {{count}} más",
+      "status": "Estado de Validación",
+      "validTasks": "Tareas Válidas",
+      "errors": "Errores"
     }
   },
   "mapFieldsStep": {
     "title": "Mapear Campos",
-    "description": "Mapea las columnas de tu CSV a los campos de Worklenz. Cada campo de Worklenz solo puede asignarse una vez. Al menos un campo debe mapearse a \"Nombre de la Tarea\".",
+    "description": "Mapee sus columnas CSV a los campos de Worklenz. Cada campo de Worklenz solo puede mapearse una vez. Al menos un campo debe mapearse a \"Nombre de Tarea\".",
     "table": {
       "csvColumn": "Columna CSV",
       "sampleData": "Datos de Ejemplo",
       "mapToField": "Mapear a Campo de Worklenz",
       "status": "Estado",
-      "selectPlaceholder": "Seleccionar campo para mapear",
-      "alreadyMapped": "(Ya asignado)",
-      "mapped": "Asignado",
-      "notMapped": "No asignado"
+      "selectPlaceholder": "Seleccione campo para mapear",
+      "alreadyMapped": "(Ya mapeado)",
+      "mapped": "Mapeado",
+      "notMapped": "No Mapeado"
     },
     "requirements": {
-      "title": "Requisitos de Mapeo",
-      "description": "Al menos una columna CSV debe mapearse al campo 'Nombre de la Tarea' para continuar. Cada campo de Worklenz solo puede asignarse a una columna CSV."
+      "title": "Requisitos de Mapeo de Campos",
+      "description": "Al menos una columna CSV debe mapearse al campo 'Nombre de Tarea' para continuar. Esto es necesario para crear tareas."
     },
     "worklenzFields": {
-      "name": "Nombre de la Tarea",
+      "name": "Nombre de Tarea",
       "description": "Descripción",
       "priority": "Prioridad",
-      "assignee": "Asignado a",
+      "assignee": "Asignado",
       "dueDate": "Fecha de Vencimiento",
       "status": "Estado",
       "labels": "Etiquetas",
-      "storyPoints": "Puntos de Historia",
-      "epic": "Épica"
+      "estimation": "Estimación",
+      "startDate": "Fecha de Inicio",
+      "reporter": "Informante"
+    },
+    "defaults": {
+      "priority": "Prioridad predeterminada para todas las tareas",
+      "status": "Estado predeterminado para todas las tareas",
+      "description": "Estos valores se utilizarán si 'Prioridad' o 'Estado' no están mapeados desde su CSV."
+    }
+  },
+  "mapValuesStep": {
+    "title": "Mapear Valores de Prioridad y Estado",
+    "description": "Mapee sus valores CSV a las prioridades y estados de Worklenz. Esto asegura que sus datos estén organizados correctamente en el sistema.",
+    "noMappingsNeeded": {
+      "title": "No hay Campos de Prioridad o Estado Mapeados",
+      "description": "No ha mapeado ningún campo de Prioridad o Estado en el paso anterior. Puede omitir este paso o volver para agregar mapeos de campos."
+    },
+    "priorityMapping": {
+      "title": "Mapeo de Valores de Prioridad",
+      "description": "Se encontraron {{count}} valor(es) único(s) de prioridad en su CSV. Mapee cada uno a una prioridad de Worklenz.",
+      "csvColumn": "Valor de Prioridad CSV",
+      "sampleTasks": "Tareas de Ejemplo",
+      "taskCount": "{{count}} tarea{{plural}} con esta prioridad",
+      "mapTo": "Mapear a Prioridad de Worklenz"
+    },
+    "statusMapping": {
+      "title": "Mapeo de Valores de Estado",
+      "description": "Se encontraron {{count}} valor(es) único(s) de estado en su CSV. Mapee cada uno a un estado de Worklenz.",
+      "csvColumn": "Valor de Estado CSV",
+      "sampleTasks": "Tareas de Ejemplo",
+      "taskCount": "{{count}} tarea{{plural}} con este estado",
+      "mapTo": "Mapear a Estado de Worklenz"
+    },
+    "requirements": {
+      "title": "Mapeo de Valores Requerido",
+      "description": "Todos los valores de prioridad y estado de su CSV deben mapearse para continuar. Esto asegura la consistencia de datos en su proyecto."
     }
   },
   "moveUsersStep": {
     "title": "Mover Usuarios",
-    "description": "Gestiona las asignaciones de usuarios encontradas en tu CSV. Puedes crear nuevos usuarios, mapearlos a usuarios existentes o saltar las asignaciones.",
+    "description": "Gestione las asignaciones de usuarios encontradas en su CSV. Puede crear nuevos usuarios, mapear a usuarios existentes u omitir asignaciones.",
     "noUsers": {
-      "title": "No se Encontraron Usuarios",
-      "description": "No se encontraron asignaciones de usuarios en tus datos CSV."
+      "title": "No se encontraron usuarios en el CSV",
+      "description": "No se detectaron datos de asignados en su archivo CSV. Las tareas se importarán sin asignados."
     },
     "table": {
       "userInCsv": "Usuario en CSV",
       "action": "Acción",
-      "mapToUser": "Mapear a Usuario de Worklenz",
+      "mapToUser": "Mapear a Usuario",
       "status": "Estado",
       "selectExistingUser": "Seleccionar usuario existente",
-      "enterEmailForNewUser": "Ingresar correo electrónico para nuevo usuario"
+      "enterEmailForNewUser": "Ingrese correo electrónico para nuevo usuario"
     },
     "actions": {
       "createUser": "Crear Usuario",
@@ -98,24 +144,45 @@
     "statuses": {
       "skipped": "Omitido",
       "readyToCreate": "Listo para Crear",
-      "emailRequired": "Correo Requerido",
-      "mapped": "Asignado",
+      "emailRequired": "Correo Electrónico Requerido",
+      "mapped": "Mapeado",
       "mappingRequired": "Mapeo Requerido"
-    }
+    },
+    "availableMembers": "Miembros del Equipo Disponibles:",
+    "loadingMembers": "Cargando miembros del equipo..."
   },
   "reviewStep": {
     "title": "Revisar e Importar",
-    "description": "Revisa tu configuración de importación e inicia el proceso de importación.",
+    "description": "Revise su configuración de importación e inicie el proceso de importación.",
     "summary": {
       "title": "Resumen de Importación",
-      "csvRows": "Filas del CSV",
-      "mappedFields": "Campos Asignados",
+      "csvRows": "Filas CSV",
+      "mappedFields": "Campos Mapeados",
       "usersToCreate": "Usuarios a Crear",
       "tasksToImport": "Tareas a Importar"
     },
     "fieldMappings": {
-      "title": "Mapeo de Campos",
-      "noMappings": "No se configuraron asignaciones de campos"
+      "title": "Mapeos de Campos",
+      "noMappings": "No hay mapeos de campos configurados"
+    },
+    "userMappings": {
+      "title": "Mapeos de Usuarios",
+      "create": "Crear: {{email}}",
+      "map": "Mapear: {{user}}",
+      "noMappings": "No se necesitan mapeos de usuarios"
+    },
+    "valueMappings": {
+      "title": "Resumen de Mapeos de Valores",
+      "priorityMappings": "Mapeos de Prioridad:",
+      "statusMappings": "Mapeos de Estado:"
+    },
+    "sampleData": {
+      "title": "Datos de Ejemplo de Importación",
+      "description": "Vista previa de las primeras 3 tareas que se importarán:",
+      "taskLabel": "Tarea {{index}}:",
+      "noName": "<Sin Nombre>",
+      "descriptionLabel": "Descripción:",
+      "moreTasks": "... y {{count}} tareas más"
     }
   },
   "messages": {
@@ -125,22 +192,39 @@
     },
     "warning": {
       "validationErrors": "Se encontraron {{count}} errores de validación",
-      "noValidTasks": "No se encontraron tareas válidas en el CSV"
+      "noValidTasks": "No se encontraron tareas válidas en el CSV",
+      "validationFailed": "La validación falló"
     },
     "error": {
-      "failedToReadFile": "No se pudo leer el contenido del archivo",
-      "csvParsingErrors": "Se encontraron errores al analizar el CSV",
+      "failedToReadFile": "Error al leer el contenido del archivo",
+      "csvParsingErrors": "Se encontraron errores al analizar el CSV: {{count}} errores",
       "csvFormatValidation": "La validación del formato CSV falló",
-      "failedToParseFile": "No se pudo analizar el archivo CSV",
-      "failedToProcessFile": "No se pudo procesar el archivo CSV",
-      "failedToImportTasks": "No se pudieron importar las tareas: {{error}}"
+      "failedToParseFile": "Error al analizar el archivo CSV",
+      "failedToProcessFile": "Error al procesar el archivo CSV",
+      "failedToImportTasks": "Error al importar tareas: {{error}}",
+      "failedToLoadTemplate": "Error al cargar los datos de plantilla del proyecto"
     }
   },
   "validation": {
-    "nameRequired": "Fila {{row}}: El nombre es obligatorio",
+    "nameRequired": "Fila {{row}}: El nombre es requerido",
     "invalidPriority": "Fila {{row}}: Prioridad inválida '{{priority}}'. Debe ser una de: {{validPriorities}}",
     "invalidDateFormat": "Fila {{row}}: La fecha de vencimiento debe estar en formato AAAA-MM-DD",
-    "csvMustContainName": "El CSV debe contener una columna 'name'",
+    "csvMustContainName": "El CSV debe contener una columna 'nombre'",
     "unknownColumns": "Se encontraron columnas desconocidas: {{columns}}"
+  },
+  "memberMapping": {
+    "selectPlaceholder": "Seleccionar miembro del equipo"
+  },
+  "modal": {
+    "title": "Importar Tareas CSV",
+    "importButton": "Importar ({{count}} tareas)"
+  },
+  "common": {
+    "of": "de",
+    "columns": "columnas"
+  },
+  "errors": {
+    "projectIdRequired": "Se requiere el ID del proyecto",
+    "unknownError": "Ocurrió un error desconocido"
   }
 }

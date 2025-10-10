@@ -4,13 +4,16 @@
   "import": "Importo",
   "remove": "Hiq",
   "previous": "Prapa",
-  "next": "Tjetra",
+  "next": "Përpara",
   "steps": {
     "uploadCsv": {
       "title": "Ngarko CSV"
     },
     "mapFields": {
-      "title": "Mapo Fushat"
+      "title": "Harto Fushat"
+    },
+    "mapValues": {
+      "title": "Harto Vlerat"
     },
     "moveUsers": {
       "title": "Lëviz Përdoruesit"
@@ -21,101 +24,165 @@
   },
   "uploadStep": {
     "title": "Ngarko Skedarin CSV",
-    "description": "Ngarko skedarin tënd CSV që përmban të dhënat që dëshiron të importosh në Worklenz.",
+    "description": "Ngarkoni skedarin tuaj CSV që përmban të dhënat që dëshironi të importoni në Worklenz.",
     "uploadArea": {
-      "dragText": "Kliko ose zvarrit skedarin në këtë zonë për ta ngarkuar",
-      "hint": "Mbështetet vetëm për skedarët CSV. Madhësia maksimale e skedarit 10MB."
+      "dragText": "Klikoni ose tërhiqni skedarin në këtë zonë për ta ngarkuar",
+      "hint": "Mbështetje vetëm për skedarë CSV. Madhësia maksimale e skedarit 10MB."
     },
     "processing": {
-      "text": "Duke përpunuar skedarin CSV...",
+      "text": "Duke procesuar skedarin CSV...",
       "successMessage": "U gjetën {{rowCount}} rreshta dhe {{columnCount}} kolona",
       "columnsLabel": "Kolonat:",
       "failedToRead": "Dështoi leximi i përmbajtjes së skedarit",
-      "parsingErrors": "U gjetën gabime gjatë analizimit të CSV",
+      "parsingErrors": "U gjetën gabime në analizimin e CSV",
       "failedToParse": "Dështoi analizimi i skedarit CSV",
-      "failedToProcess": "Dështoi përpunimi i skedarit CSV",
-      "emptyFile": "Skedari CSV është bosh",
+      "failedToProcess": "Dështoi procesimi i skedarit CSV",
+      "emptyFile": "Skedar CSV bosh",
       "noDataFound": "Nuk u gjetën të dhëna në CSV"
     },
     "preview": {
-      "title": "Parapamje e CSV",
-      "foundData": "U gjetën {{rowCount}} rreshta dhe {{columnCount}} kolona"
+      "title": "Pamja Paraprake e CSV",
+      "foundData": "U gjetën {{rowCount}} rreshta dhe {{columnCount}} kolona",
+      "columnsLabel": "Kolonat:"
     },
     "errors": {
-      "title": "Gabime gjatë analizimit të CSV",
+      "title": "Gabime në Analizimin e CSV",
       "expectedColumns": "Rreshti {{row}}: Priteshin {{expected}} kolona, u gjetën {{found}}"
+    },
+    "loadingTemplate": "Duke ngarkuar të dhënat e shabllonit të projektit...",
+    "validationSummary": {
+      "title": "Vlefshmëria u plotësua me {{count}} paralajmërime",
+      "moreWarnings": "... dhe {{count}} të tjera",
+      "status": "Statusi i Vlefshmërisë",
+      "validTasks": "Detyra të Vlefshme",
+      "errors": "Gabime"
     }
   },
   "mapFieldsStep": {
-    "title": "Mapo Fushat",
-    "description": "Mapo kolonat e CSV me fushat e Worklenz. Çdo fushë e Worklenz mund të mappohet vetëm një herë. Të paktën një fushë duhet të mappohet te \"Task Name\".",
+    "title": "Harto Fushat",
+    "description": "Hartoni kolonat tuaja CSV me fushat e Worklenz. Çdo fushë e Worklenz mund të hartohet vetëm një herë. Të paktën një fushë duhet të hartohet me \"Emri i Detyrës\".",
     "table": {
       "csvColumn": "Kolona CSV",
-      "sampleData": "Të dhëna Shembull",
-      "mapToField": "Mapo me Fushën Worklenz",
+      "sampleData": "Të Dhëna Shembull",
+      "mapToField": "Harto me Fushën e Worklenz",
       "status": "Statusi",
-      "selectPlaceholder": "Zgjidh fushën për të mappuar",
-      "alreadyMapped": "(Tashmë e mappuar)",
-      "mapped": "E Mappuar",
-      "notMapped": "Jo e Mappuar"
+      "selectPlaceholder": "Zgjidhni fushën për të hartuar",
+      "alreadyMapped": "(Tashmë e hartuar)",
+      "mapped": "E hartuar",
+      "notMapped": "Nuk është Hartuar"
     },
     "requirements": {
-      "title": "Kërkesat për Mapping",
-      "description": "Të paktën një kolonë e CSV duhet të mappohet te fusha 'Task Name' për të vazhduar. Çdo fushë Worklenz mund të mappohet vetëm te një kolonë CSV."
+      "title": "Kërkesat e Hartimit të Fushave",
+      "description": "Të paktën një kolonë CSV duhet të hartohet me fushën 'Emri i Detyrës' për të vazhduar. Kjo është e nevojshme për krijimin e detyrave."
     },
     "worklenzFields": {
       "name": "Emri i Detyrës",
       "description": "Përshkrimi",
       "priority": "Prioriteti",
-      "assignee": "Personi i Caktuar",
-      "dueDate": "Afati",
+      "assignee": "Përgjegjësi",
+      "dueDate": "Data e Afatit",
       "status": "Statusi",
       "labels": "Etiketat",
-      "storyPoints": "Piket e Historisë",
-      "epic": "Epiku"
+      "estimation": "Vlerësimi",
+      "startDate": "Data e Fillimit",
+      "reporter": "Raportues"
+    },
+    "defaults": {
+      "priority": "Prioriteti i Paracaktuar për të gjitha detyrat",
+      "status": "Statusi i Paracaktuar për të gjitha detyrat",
+      "description": "Këto vlera do të përdoren nëse 'Prioriteti' ose 'Statusi' nuk janë hartuar nga CSV juaj."
+    }
+  },
+  "mapValuesStep": {
+    "title": "Harto Vlerat e Prioritetit & Statusit",
+    "description": "Hartoni vlerat tuaja CSV me prioritetet dhe statuset e Worklenz. Kjo siguron që të dhënat tuaja të organizohen siç duhet në sistem.",
+    "noMappingsNeeded": {
+      "title": "Nuk ka Fusha Prioriteti ose Statusi të Hartuara",
+      "description": "Nuk keni hartuar asnjë fushë Prioriteti ose Statusi në hapin e mëparshëm. Mund ta anashkaloni këtë hap ose të ktheheni për të shtuar hartime fushash."
+    },
+    "priorityMapping": {
+      "title": "Hartimi i Vlerës së Prioritetit",
+      "description": "U gjetën {{count}} vlerë(a) unike prioriteti në CSV tuaj. Hartoni secilin me një prioritet Worklenz.",
+      "csvColumn": "Vlera e Prioritetit CSV",
+      "sampleTasks": "Detyra Shembull",
+      "taskCount": "{{count}} detyrë{{plural}} me këtë prioritet",
+      "mapTo": "Harto me Prioritetin Worklenz"
+    },
+    "statusMapping": {
+      "title": "Hartimi i Vlerës së Statusit",
+      "description": "U gjetën {{count}} vlerë(a) unike statusi në CSV tuaj. Hartoni secilin me një status Worklenz.",
+      "csvColumn": "Vlera e Statusit CSV",
+      "sampleTasks": "Detyra Shembull",
+      "taskCount": "{{count}} detyrë{{plural}} me këtë status",
+      "mapTo": "Harto me Statusin Worklenz"
+    },
+    "requirements": {
+      "title": "Hartimi i Vlerave është i Nevojshëm",
+      "description": "Të gjitha vlerat e prioritetit dhe statusit nga CSV juaj duhet të hartohen për të vazhduar. Kjo siguron konsistencën e të dhënave në projektin tuaj."
     }
   },
   "moveUsersStep": {
     "title": "Lëviz Përdoruesit",
-    "description": "Menaxho caktimet e përdoruesve që gjenden në CSV. Mund të krijosh përdorues të rinj, t’i maposh me përdorues ekzistues ose t’i anashkalosh.",
+    "description": "Trajtoni caktimet e përdoruesve të gjetura në CSV tuaj. Mund të krijoni përdorues të rinj, të hartoni me përdorues ekzistues, ose të anashkaloni caktimet.",
     "noUsers": {
-      "title": "Nuk u gjetën Përdorues",
-      "description": "Nuk u gjetën caktime të përdoruesve në të dhënat e tua CSV."
+      "title": "Nuk u gjetën përdorues në CSV",
+      "description": "Nuk u zbuluan të dhëna përgjegjësish në skedarin tuaj CSV. Detyrat do të importohen pa përgjegjës."
     },
     "table": {
-      "userInCsv": "Përdorues në CSV",
-      "action": "Veprimi",
-      "mapToUser": "Mapo me Përdoruesin Worklenz",
+      "userInCsv": "Përdoruesi në CSV",
+      "action": "Veprim",
+      "mapToUser": "Harto me Përdorues",
       "status": "Statusi",
-      "selectExistingUser": "Zgjidh përdorues ekzistues",
-      "enterEmailForNewUser": "Shkruaj email për përdorues të ri"
+      "selectExistingUser": "Zgjidhni përdorues ekzistues",
+      "enterEmailForNewUser": "Shkruani email-in për përdorues të ri"
     },
     "actions": {
       "createUser": "Krijo Përdorues",
-      "mapToExisting": "Mapo me Ekzistues",
+      "mapToExisting": "Harto me Ekzistues",
       "skip": "Anashkalo"
     },
     "statuses": {
-      "skipped": "E Anashkaluar",
-      "readyToCreate": "Gati për Krijim",
-      "emailRequired": "Kërkohet Email",
-      "mapped": "E Mappuar",
-      "mappingRequired": "Kërkohet Mapping"
-    }
+      "skipped": "U anashkalua",
+      "readyToCreate": "Gati për të Krijuar",
+      "emailRequired": "Email-i i Nevojshëm",
+      "mapped": "E hartuar",
+      "mappingRequired": "Hartimi i Nevojshëm"
+    },
+    "availableMembers": "Anëtarët e Ekipit të Disponueshëm:",
+    "loadingMembers": "Duke ngarkuar anëtarët e ekipit..."
   },
   "reviewStep": {
     "title": "Rishiko & Importo",
-    "description": "Rishiko konfigurimin e importit dhe nis procesin e importit.",
+    "description": "Rishikoni konfigurimin tuaj të importimit dhe filloni procesin e importimit.",
     "summary": {
-      "title": "Përmbledhje e Importit",
-      "csvRows": "Rreshtat e CSV",
-      "mappedFields": "Fushat e Mappuara",
-      "usersToCreate": "Përdoruesit për t’u Krijuar",
-      "tasksToImport": "Detyrat për t’u Importuar"
+      "title": "Përmbledhja e Importimit",
+      "csvRows": "Rreshtat CSV",
+      "mappedFields": "Fushat e Hartuara",
+      "usersToCreate": "Përdorues për të Krijuar",
+      "tasksToImport": "Detyra për të Importuar"
     },
     "fieldMappings": {
-      "title": "Mapping i Fushave",
-      "noMappings": "Nuk ka konfigurime të mapping"
+      "title": "Hartimet e Fushave",
+      "noMappings": "Nuk ka hartime fushash të konfigruara"
+    },
+    "userMappings": {
+      "title": "Hartimet e Përdoruesve",
+      "create": "Krijo: {{email}}",
+      "map": "Harto: {{user}}",
+      "noMappings": "Nuk ka nevojë për hartime përdoruesish"
+    },
+    "valueMappings": {
+      "title": "Përmbledhja e Hartimeve të Vlerave",
+      "priorityMappings": "Hartimet e Prioritetit:",
+      "statusMappings": "Hartimet e Statusit:"
+    },
+    "sampleData": {
+      "title": "Të Dhëna Shembull Importimi",
+      "description": "Pamja paraprake e 3 detyrave të para që do të importohen:",
+      "taskLabel": "Detyra {{index}}:",
+      "noName": "<Pa Emër>",
+      "descriptionLabel": "Përshkrimi:",
+      "moreTasks": "... dhe {{count}} detyra të tjera"
     }
   },
   "messages": {
@@ -124,23 +191,40 @@
       "tasksImported": "U importuan me sukses {{count}} detyra"
     },
     "warning": {
-      "validationErrors": "U gjetën {{count}} gabime validimi",
-      "noValidTasks": "Nuk u gjetën detyra të vlefshme në CSV"
+      "validationErrors": "U gjetën {{count}} gabime vlefshmërie",
+      "noValidTasks": "Nuk u gjetën detyra të vlefshme në CSV",
+      "validationFailed": "Vlefshmëria dështoi"
     },
     "error": {
       "failedToReadFile": "Dështoi leximi i përmbajtjes së skedarit",
-      "csvParsingErrors": "U gjetën gabime gjatë analizimit të CSV",
-      "csvFormatValidation": "Validimi i formatit CSV dështoi",
+      "csvParsingErrors": "U gjetën gabime në analizimin e CSV: {{count}} gabime",
+      "csvFormatValidation": "Vlefshmëria e formatit CSV dështoi",
       "failedToParseFile": "Dështoi analizimi i skedarit CSV",
-      "failedToProcessFile": "Dështoi përpunimi i skedarit CSV",
-      "failedToImportTasks": "Dështoi importimi i detyrave: {{error}}"
+      "failedToProcessFile": "Dështoi procesimi i skedarit CSV",
+      "failedToImportTasks": "Dështoi importimi i detyrave: {{error}}",
+      "failedToLoadTemplate": "Dështoi ngarkimi i të dhënave të shabllonit të projektit"
     }
   },
   "validation": {
-    "nameRequired": "Rreshti {{row}}: Emri është i detyrueshëm",
-    "invalidPriority": "Rreshti {{row}}: Prioriteti '{{priority}}' është i pavlefshëm. Duhet të jetë një nga: {{validPriorities}}",
-    "invalidDateFormat": "Rreshti {{row}}: Data e afatit duhet të jetë në formatin YYYY-MM-DD",
-    "csvMustContainName": "CSV duhet të përmbajë një kolonë 'name'",
+    "nameRequired": "Rreshti {{row}}: Emri është i nevojshëm",
+    "invalidPriority": "Rreshti {{row}}: Prioriteti i pavlefshëm '{{priority}}'. Duhet të jetë një nga: {{validPriorities}}",
+    "invalidDateFormat": "Rreshti {{row}}: Data e afatit duhet të jetë në formatin VVVV-MM-DD",
+    "csvMustContainName": "CSV duhet të përmbajë një kolonë 'emër'",
     "unknownColumns": "U gjetën kolona të panjohura: {{columns}}"
+  },
+  "memberMapping": {
+    "selectPlaceholder": "Zgjidhni anëtar të ekipit"
+  },
+  "modal": {
+    "title": "Importo Detyra CSV",
+    "importButton": "Importo ({{count}} detyra)"
+  },
+  "common": {
+    "of": "nga",
+    "columns": "kolona"
+  },
+  "errors": {
+    "projectIdRequired": "ID e projektit është e nevojshme",
+    "unknownError": "Ndodhi një gabim i panjohur"
   }
 }
