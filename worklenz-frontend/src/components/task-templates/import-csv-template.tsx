@@ -1321,6 +1321,7 @@ const ImportCSVTemplate: React.FC<ImportCSVProps> = ({
                     {
                       title: t('moveUsersStep.table.mapToUser'),
                       key: 'mapping',
+                      width: 280,
                       render: (_, record) => {
                         if (record.action === 'map') {
                           return (
@@ -1335,7 +1336,7 @@ const ImportCSVTemplate: React.FC<ImportCSVProps> = ({
                               value={record.email}
                               onChange={(e) => handleUserMappingChange(record.csvUser, { email: e.target.value })}
                               placeholder={t('moveUsersStep.table.enterEmailForNewUser')}
-                              style={{ width: 200 }}
+                              style={{ width: '100%' }}
                               size="small"
                             />
                           );
@@ -1718,6 +1719,8 @@ const ImportCSVTemplate: React.FC<ImportCSVProps> = ({
       );
     }, [members, searchText]);
 
+    const selectedMember = members?.data?.find(m => m.id === record.team_member_id);
+
     return (
       <Select
         value={record.team_member_id}
@@ -1730,15 +1733,25 @@ const ImportCSVTemplate: React.FC<ImportCSVProps> = ({
         showSearch
         placeholder={t('memberMapping.selectPlaceholder')}
         optionFilterProp="children"
-        style={{ width: 200 }}
+        style={{ width: '100%', minWidth: 200 }}
         size="small"
         onSearch={setSearchText}
+        dropdownMatchSelectWidth={false}
+        optionLabelProp="label"
       >
         {filteredMembers?.map(member => (
           <Option 
             key={member.id} 
             value={member.id}
             email={member.email}
+            label={
+              <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                <Avatar src={member.avatar_url} size={20}>{member.name?.[0]}</Avatar>
+                <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                  {member.email}
+                </span>
+              </div>
+            }
           >
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
               <Avatar
@@ -1748,9 +1761,9 @@ const ImportCSVTemplate: React.FC<ImportCSVProps> = ({
               >
                 {member.name?.[0]}
               </Avatar>
-              <div style={{ display: 'flex', flexDirection: 'column' }}>
-                <span>{member.name}</span>
-                <span style={{ fontSize: '12px', color: '#666' }}>{member.email}</span>
+              <div style={{ display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+                <span style={{ fontWeight: 500 }}>{member.name}</span>
+                <span style={{ fontSize: '12px', color: '#666', overflow: 'hidden', textOverflow: 'ellipsis' }}>{member.email}</span>
               </div>
             </div>
           </Option>
