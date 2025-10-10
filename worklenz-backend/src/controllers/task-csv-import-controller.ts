@@ -286,32 +286,67 @@ export default class TaskcsvimportController extends WorklenzControllerBase {
           );
           const nextSortOrder = sortOrderRes.rows[0].next_sort_order;
 
-          const ins = await client.query(
-            `INSERT INTO tasks (
-              project_id,
-              name,
-              description,
-              priority_id,
-              status_id,
-              sort_order,
-              end_date,
-              reporter_id,
-              created_at,
-              updated_at
-            ) VALUES (
-              $1, $2, $3, $4, $5, $6, NULLIF($7,'')::date, $8, NOW(), NOW()
-            ) RETURNING id`,
-            [
-              projectId,
-              t.name,
-              t.description || null,
-              priorityId,
-              statusId,
-              nextSortOrder,
-              endDate,
-              userId
-            ]
-          );
+          // Use CSV id if provided and valid UUID, otherwise let DB generate
+          const useCustomId = t.id && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(t.id);
+          
+          let ins;
+          if (useCustomId) {
+            ins = await client.query(
+              `INSERT INTO tasks (
+                id,
+                project_id,
+                name,
+                description,
+                priority_id,
+                status_id,
+                sort_order,
+                end_date,
+                reporter_id,
+                created_at,
+                updated_at
+              ) VALUES (
+                $1, $2, $3, $4, $5, $6, $7, NULLIF($8,'')::date, $9, NOW(), NOW()
+              ) RETURNING id`,
+              [
+                t.id,
+                projectId,
+                t.name,
+                t.description || null,
+                priorityId,
+                statusId,
+                nextSortOrder,
+                endDate,
+                userId
+              ]
+            );
+          } else {
+            ins = await client.query(
+              `INSERT INTO tasks (
+                project_id,
+                name,
+                description,
+                priority_id,
+                status_id,
+                sort_order,
+                end_date,
+                reporter_id,
+                created_at,
+                updated_at
+              ) VALUES (
+                $1, $2, $3, $4, $5, $6, NULLIF($7,'')::date, $8, NOW(), NOW()
+              ) RETURNING id`,
+              [
+                projectId,
+                t.name,
+                t.description || null,
+                priorityId,
+                statusId,
+                nextSortOrder,
+                endDate,
+                userId
+              ]
+            );
+          }
           const newTaskId = ins.rows[0].id as string;
           insertedCount += 1;
 

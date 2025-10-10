@@ -76,6 +76,7 @@
       "description": "Të paktën një kolonë CSV duhet të hartohet me fushën 'Emri i Detyrës' për të vazhduar. Kjo është e nevojshme për krijimin e detyrave."
     },
     "worklenzFields": {
+      "id": "ID e Detyrës",
       "name": "Emri i Detyrës",
       "description": "Përshkrimi",
       "priority": "Prioriteti",

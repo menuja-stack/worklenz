@@ -294,6 +294,7 @@ const ImportCSVTemplate: React.FC<ImportCSVProps> = ({
 
   // Available Worklenz fields
   const worklenzFields = [
+    { value: 'id', label: t('mapFieldsStep.worklenzFields.id'), required: false },
     { value: 'name', label: t('mapFieldsStep.worklenzFields.name'), required: true },
     { value: 'description', label: t('mapFieldsStep.worklenzFields.description'), required: false },
     { value: 'assignee', label: t('mapFieldsStep.worklenzFields.assignee'), required: false },
@@ -492,7 +493,9 @@ const ImportCSVTemplate: React.FC<ImportCSVProps> = ({
       const lowerCsvField = csvField.toLowerCase().replace(/[^a-z]/g, '');
       let worklenzField = '';
 
-      if (['name', 'title', 'summary', 'task', 'taskname'].some(keyword => lowerCsvField.includes(keyword))) {
+      if (['id', 'taskid', 'uuid', 'identifier'].some(keyword => lowerCsvField.includes(keyword))) {
+        worklenzField = 'id';
+      } else if (['name', 'title', 'summary', 'task', 'taskname'].some(keyword => lowerCsvField.includes(keyword))) {
         worklenzField = 'name';
       } else if (['description', 'desc', 'details'].some(keyword => lowerCsvField.includes(keyword))) {
         worklenzField = 'description';
@@ -763,6 +766,9 @@ const ImportCSVTemplate: React.FC<ImportCSVProps> = ({
               const value = row[mapping.csvField].trim();
 
               switch (mapping.worklenzField) {
+                case 'id':
+                  task.id = value;
+                  break;
                 case 'name':
                   task.name = value;
                   break;

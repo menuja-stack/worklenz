@@ -76,6 +76,7 @@
       "description": "Pelo menos uma coluna CSV deve ser mapeada para o campo 'Nome da Tarefa' para prosseguir. Isso é necessário para criar tarefas."
     },
     "worklenzFields": {
+      "id": "ID da Tarefa",
       "name": "Nome da Tarefa",
       "description": "Descrição",
       "priority": "Prioridade",

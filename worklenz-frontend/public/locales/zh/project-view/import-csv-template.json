@@ -60,7 +60,7 @@
   },
   "mapFieldsStep": {
     "title": "映射字段",
-    "description": "将CSV列映射到Worklenz字段。每个Worklenz字段只能映射一次。至少一个字段必须映射到"任务名称"。",
+    "description": "将CSV列映射到Worklenz字段。每个Worklenz字段只能映射一次。至少一个字段必须映射到'任务名称'。",
     "table": {
       "csvColumn": "CSV列",
       "sampleData": "示例数据",
@@ -73,9 +73,10 @@
     },
     "requirements": {
       "title": "字段映射要求",
-      "description": "至少一个CSV列必须映射到"任务名称"字段才能继续。这是创建任务所必需的。"
+      "description": "至少一个CSV列必须映射到'任务名称'字段才能继续。这是创建任务所必需的。"
     },
     "worklenzFields": {
+      "id": "任务ID",
       "name": "任务名称",
       "description": "描述",
       "priority": "优先级",
@@ -90,7 +91,7 @@
     "defaults": {
       "priority": "所有任务的默认优先级",
       "status": "所有任务的默认状态",
-      "description": "如果CSV中未映射"优先级"或"状态"，将使用这些值。"
+      "description": "如果CSV中未映射'优先级'或'状态'，将使用这些值。"
     }
   },
   "mapValuesStep": {
@@ -207,9 +208,9 @@
   },
   "validation": {
     "nameRequired": "第{{row}}行：名称是必需的",
-    "invalidPriority": "第{{row}}行：无效的优先级"{{priority}}"。必须是以下之一：{{validPriorities}}",
+    "invalidPriority": "第{{row}}行：无效的优先级'{{priority}}'。必须是以下之一：{{validPriorities}}",
     "invalidDateFormat": "第{{row}}行：截止日期必须为YYYY-MM-DD格式",
-    "csvMustContainName": "CSV必须包含"名称"列",
+    "csvMustContainName": "CSV必须包含'名称'列",
     "unknownColumns": "找到未知列：{{columns}}"
   },
   "memberMapping": {

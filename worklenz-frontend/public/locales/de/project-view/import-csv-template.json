@@ -76,6 +76,7 @@
       "description": "Mindestens eine CSV-Spalte muss dem Feld 'Aufgabenname' zugeordnet werden, um fortzufahren. Dies ist zum Erstellen von Aufgaben erforderlich."
     },
     "worklenzFields": {
+      "id": "Aufgaben-ID",
       "name": "Aufgabenname",
       "description": "Beschreibung",
       "priority": "Priorität",

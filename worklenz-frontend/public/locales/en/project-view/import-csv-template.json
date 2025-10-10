@@ -76,6 +76,7 @@
       "description": "At least one CSV column must be mapped to 'Task Name' field to proceed. This is required for creating tasks."
     },
     "worklenzFields": {
+      "id": "Task ID",
       "name": "Task Name",
       "description": "Description",
       "priority": "Priority",

@@ -76,6 +76,7 @@
       "description": "계속하려면 최소 하나의 CSV 열이 '작업 이름' 필드에 매핑되어야 합니다. 이는 작업 생성에 필요합니다."
     },
     "worklenzFields": {
+      "id": "작업 ID",
       "name": "작업 이름",
       "description": "설명",
       "priority": "우선순위",
