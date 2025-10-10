@@ -1520,78 +1520,170 @@ const ImportCSVTemplate: React.FC<ImportCSVProps> = ({
             )}
 
             <Card title={t('reviewStep.sampleData.title')} size="small" style={{ marginTop: 16 }}>
-              <Text type="secondary" style={{ marginBottom: 8, display: 'block' }}>
+              <Text type="secondary" style={{ marginBottom: 16, display: 'block' }}>
                 {t('reviewStep.sampleData.description')}
               </Text>
               
-              {csvData.slice(0, 3).map((row, index) => {
-                const previewTask: any = { id: index };
-                
-                fieldMappings.forEach(mapping => {
-                  if (mapping.mapped && row[mapping.csvField]) {
-                    const value = row[mapping.csvField].trim();
-                    switch (mapping.worklenzField) {
-                      case 'name':
-                        previewTask.name = value;
-                        break;
-                      case 'description':
-                        previewTask.description = value;
-                        break;
-                      case 'priority':
-                        const priorityMapping = valueMappings.find(
-                          vm => vm.csvValue === value && vm.fieldType === 'priority'
-                        );
-                        previewTask.priority = priorityMapping?.worklenzValue;
-                        break;
-                      case 'assignee':
-                        const userMapping = userMappings.find(um => um.csvUser === value);
-                        previewTask.assignee = userMapping?.worklenzUser || userMapping?.email || value;
-                        break;
-                      case 'dueDate':
-                        previewTask.dueDate = value;
-                        break;
-                      case 'status':
-                        const statusMapping = valueMappings.find(
-                          vm => vm.csvValue === value && vm.fieldType === 'status'
-                        );
-                        previewTask.status = statusMapping?.worklenzValue;
-                        break;
+              <Table
+                dataSource={csvData.slice(0, 3).map((row, index) => {
+                  const previewTask: any = { key: index, rowNumber: index + 1 };
+                  
+                  fieldMappings.forEach(mapping => {
+                    if (mapping.mapped && row[mapping.csvField]) {
+                      const value = row[mapping.csvField].trim();
+                      switch (mapping.worklenzField) {
+                        case 'id':
+                          previewTask.id = value;
+                          break;
+                        case 'name':
+                          previewTask.name = value;
+                          break;
+                        case 'description':
+                          previewTask.description = value;
+                          break;
+                        case 'priority':
+                          const priorityMapping = valueMappings.find(
+                            vm => vm.csvValue === value && vm.fieldType === 'priority'
+                          );
+                          previewTask.priority = priorityMapping?.worklenzValue;
+                          break;
+                        case 'assignee':
+                          const userMapping = userMappings.find(um => um.csvUser === value);
+                          previewTask.assignee = userMapping?.worklenzUser || userMapping?.email || value;
+                          break;
+                        case 'dueDate':
+                          previewTask.dueDate = value;
+                          break;
+                        case 'status':
+                          const statusMapping = valueMappings.find(
+                            vm => vm.csvValue === value && vm.fieldType === 'status'
+                          );
+                          previewTask.status = statusMapping?.worklenzValue;
+                          break;
+                        case 'startDate':
+                          previewTask.startDate = value;
+                          break;
+                        case 'estimation':
+                          previewTask.estimation = value;
+                          break;
+                      }
                     }
-                  }
-                });
-
-                return (
-                  <div key={index} style={{ 
-                    marginBottom: 12, 
-                    padding: '12px', 
-                    border: '1px solid #d9d9d9', 
-                    borderRadius: '6px',
-                    backgroundColor: '#fafafa'
-                  }}>
-                    <div><Text strong>{t('reviewStep.sampleData.taskLabel', { index: index + 1 })}</Text> {previewTask.name || t('reviewStep.sampleData.noName')}</div>
-                    {previewTask.description && <div><Text type="secondary">{t('reviewStep.sampleData.descriptionLabel')}</Text> {previewTask.description}</div>}
-                    <div style={{ marginTop: 4 }}>
-                      {previewTask.priority && (
-                        <Tag color={
-                          previewTask.priority === 'High' ? 'red' :
-                          previewTask.priority === 'Medium' ? 'orange' : 'green'
-                        }>{previewTask.priority}</Tag>
-                      )}
-                      {previewTask.status && (
-                        <Tag color={
-                          previewTask.status === 'Done' ? 'green' :
-                          previewTask.status === 'In Progress' ? 'blue' : 'default'
-                        }>{previewTask.status}</Tag>
-                      )}
-                      {previewTask.assignee && <Tag color="purple">{previewTask.assignee}</Tag>}
-                      {previewTask.dueDate && <Tag>{previewTask.dueDate}</Tag>}
-                    </div>
-                  </div>
-                );
-              })}
+                  });
+                  
+                  return previewTask;
+                })}
+                columns={[
+                  {
+                    title: '#',
+                    dataIndex: 'rowNumber',
+                    key: 'rowNumber',
+                    width: 50,
+                    align: 'center' as const
+                  },
+                  ...(fieldMappings.find(m => m.mapped && m.worklenzField === 'id') ? [{
+                    title: t('mapFieldsStep.worklenzFields.id'),
+                    dataIndex: 'id',
+                    key: 'id',
+                    width: 120,
+                    ellipsis: true,
+                    render: (text: string) => text ? <Text code style={{ fontSize: '11px' }}>{text}</Text> : '-'
+                  }] : []),
+                  {
+                    title: t('mapFieldsStep.worklenzFields.name'),
+                    dataIndex: 'name',
+                    key: 'name',
+                    ellipsis: true,
+                    render: (text: string) => text ? <Text strong>{text}</Text> : <Text type="secondary">{t('reviewStep.sampleData.noName')}</Text>
+                  },
+                  ...(fieldMappings.find(m => m.mapped && m.worklenzField === 'description') ? [{
+                    title: t('mapFieldsStep.worklenzFields.description'),
+                    dataIndex: 'description',
+                    key: 'description',
+                    ellipsis: true,
+                    render: (text: string) => text || '-'
+                  }] : []),
+                  ...(fieldMappings.find(m => m.mapped && m.worklenzField === 'priority') ? [{
+                    title: t('mapFieldsStep.worklenzFields.priority'),
+                    dataIndex: 'priority',
+                    key: 'priority',
+                    width: 100,
+                    render: (text: string) => text ? (
+                      <Tag color={
+                        text === 'High' ? 'red' :
+                        text === 'Medium' ? 'orange' : 'green'
+                      }>{text}</Tag>
+                    ) : '-'
+                  }] : []),
+                  ...(fieldMappings.find(m => m.mapped && m.worklenzField === 'status') ? [{
+                    title: t('mapFieldsStep.worklenzFields.status'),
+                    dataIndex: 'status',
+                    key: 'status',
+                    width: 120,
+                    render: (text: string) => text ? (
+                      <Tag color={
+                        text === 'Done' ? 'green' :
+                        text === 'In Progress' ? 'blue' : 'default'
+                      }>{text}</Tag>
+                    ) : '-'
+                  }] : []),
+                  ...(fieldMappings.find(m => m.mapped && m.worklenzField === 'assignee') ? [{
+                    title: t('mapFieldsStep.worklenzFields.assignee'),
+                    dataIndex: 'assignee',
+                    key: 'assignee',
+                    width: 150,
+                    ellipsis: true,
+                    render: (text: string) => text ? <Tag color="purple">{text}</Tag> : '-'
+                  }] : []),
+                  ...(fieldMappings.find(m => m.mapped && m.worklenzField === 'dueDate') ? [{
+                    title: t('mapFieldsStep.worklenzFields.dueDate'),
+                    dataIndex: 'dueDate',
+                    key: 'dueDate',
+                    width: 120,
+                    render: (text: string) => {
+                      if (!text) return '-';
+                      // Check for invalid dates
+                      if (text.includes('0000-00-00') || text === '0000-00-00 00:00:00') return 'N/A';
+                      // Remove time portion if present
+                      const dateOnly = text.split(' ')[0];
+                      // Validate date format
+                      if (!/^\d{4}-\d{2}-\d{2}$/.test(dateOnly)) return text;
+                      return dateOnly;
+                    }
+                  }] : []),
+                  ...(fieldMappings.find(m => m.mapped && m.worklenzField === 'startDate') ? [{
+                    title: t('mapFieldsStep.worklenzFields.startDate'),
+                    dataIndex: 'startDate',
+                    key: 'startDate',
+                    width: 120,
+                    render: (text: string) => {
+                      if (!text) return '-';
+                      // Check for invalid dates
+                      if (text.includes('0000-00-00') || text === '0000-00-00 00:00:00') return 'N/A';
+                      // Remove time portion if present
+                      const dateOnly = text.split(' ')[0];
+                      // Validate date format
+                      if (!/^\d{4}-\d{2}-\d{2}$/.test(dateOnly)) return text;
+                      return dateOnly;
+                    }
+                  }] : []),
+                  ...(fieldMappings.find(m => m.mapped && m.worklenzField === 'estimation') ? [{
+                    title: t('mapFieldsStep.worklenzFields.estimation'),
+                    dataIndex: 'estimation',
+                    key: 'estimation',
+                    width: 100,
+                    render: (text: string) => text || '-'
+                  }] : [])
+                ]}
+                pagination={false}
+                size="small"
+                bordered
+                scroll={{ x: 'max-content' }}
+              />
 
               {csvData.length > 3 && (
-                <Text type="secondary">{t('reviewStep.sampleData.moreTasks', { count: csvData.length - 3 })}</Text>
+                <Text type="secondary" style={{ marginTop: 12, display: 'block' }}>
+                  {t('reviewStep.sampleData.moreTasks', { count: csvData.length - 3 })}
+                </Text>
               )}
             </Card>
           </div>
