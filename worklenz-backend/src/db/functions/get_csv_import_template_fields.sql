@@ -13,10 +13,10 @@ BEGIN
 
     -- Get counts for debugging (with error handling)
     BEGIN
-        SELECT COUNT(*) INTO _status_count FROM project_statuses WHERE project_id = _project_id;
+        SELECT COUNT(*) INTO _status_count FROM task_statuses WHERE project_id = _project_id;
     EXCEPTION WHEN OTHERS THEN
         _status_count := 0;
-        RAISE NOTICE 'Error counting project_statuses: %', SQLERRM;
+        RAISE NOTICE 'Error counting task_statuses: %', SQLERRM;
     END;
 
     BEGIN
@@ -44,19 +44,19 @@ BEGIN
             SELECT json_agg(status_data)
             FROM (
                 SELECT 
-                    ps.id,
-                    ps.name,
-                    ps.category_id as category,
-                    COALESCE(ps.sort_order, 0) as sort_order,
+                    ts.id,
+                    ts.name,
+                    ts.category_id as category,
+                    COALESCE(ts.sort_order, 0) as sort_order,
                     EXISTS (
                         SELECT 1 
                         FROM sys_task_status_categories stsc 
-                        WHERE stsc.id = ps.category_id 
+                        WHERE stsc.id = ts.category_id 
                         AND stsc.is_done IS TRUE
                     ) as is_done
-                FROM project_statuses ps
-                WHERE ps.project_id = _project_id
-                ORDER BY ps.sort_order
+                FROM task_statuses ts
+                WHERE ts.project_id = _project_id
+                ORDER BY ts.sort_order
             ) status_data
         ), '[]'::json),
         'priorities', COALESCE((

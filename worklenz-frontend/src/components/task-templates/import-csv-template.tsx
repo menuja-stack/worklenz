@@ -99,6 +99,7 @@ interface ProjectTemplate {
     name: string;
     category: string;
     is_done: boolean;
+    sort_order: number;
   }>;
   priorities: Array<{
     id: string;
@@ -279,18 +280,38 @@ const ImportCSVTemplate: React.FC<ImportCSVProps> = ({
   const [importing, setImporting] = useState(false);
   const [validationResult, setValidationResult] = useState<any>(null);
 
-  // Worklenz Priority and Status options
-  const worklenzPriorities = [
-    { value: 'Low', label: 'Low', color: '#52c41a' },
-    { value: 'Medium', label: 'Medium', color: '#faad14' },
-    { value: 'High', label: 'High', color: '#ff4d4f' }
-  ];
+  // Worklenz Priority options - use project priorities if available
+  const worklenzPriorities = useMemo(() => {
+    if (projectTemplate?.priorities && projectTemplate.priorities.length > 0) {
+      return projectTemplate.priorities.map(p => ({
+        value: p.name,
+        label: p.name,
+        color: p.color || '#808080'
+      }));
+    }
+    return [
+      { value: 'Low', label: 'Low', color: '#52c41a' },
+      { value: 'Medium', label: 'Medium', color: '#faad14' },
+      { value: 'High', label: 'High', color: '#ff4d4f' }
+    ];
+  }, [projectTemplate]);
 
-  const worklenzStatuses = [
-    { value: 'To Do', label: 'To Do', color: '#d9d9d9' },
-    { value: 'In Progress', label: 'In Progress', color: '#1890ff' },
-    { value: 'Done', label: 'Done', color: '#52c41a' }
-  ];
+  // Worklenz Status options - use project statuses if available
+  const worklenzStatuses = useMemo(() => {
+    if (projectTemplate?.project_statuses && projectTemplate.project_statuses.length > 0) {
+      return projectTemplate.project_statuses.map(s => ({
+        value: s.name,
+        label: s.name,
+        color: s.is_done ? '#52c41a' : '#1890ff',
+        is_done: s.is_done
+      }));
+    }
+    return [
+      { value: 'To Do', label: 'To Do', color: '#d9d9d9', is_done: false },
+      { value: 'Doing', label: 'Doing', color: '#1890ff', is_done: false },
+      { value: 'Done', label: 'Done', color: '#52c41a', is_done: true }
+    ];
+  }, [projectTemplate]);
 
   // Available Worklenz fields
   const worklenzFields = [

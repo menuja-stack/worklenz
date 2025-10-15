@@ -66,11 +66,12 @@ BEGIN
     LIMIT 1;
   END IF;
 
-  -- Get default status from task_statuses (fallback: first status)
+  -- Get default status from task_statuses (fallback: first status for this project)
   IF _statuses_exist THEN
     SELECT ts.id INTO _default_status_id
     FROM task_statuses ts
-    ORDER BY ts.name
+    WHERE ts.project_id = _project_id
+    ORDER BY ts.sort_order, ts.name
     LIMIT 1;
   END IF;
 
@@ -161,7 +162,7 @@ BEGIN
         SELECT ts.id
         INTO _status_id
         FROM task_statuses ts
-        WHERE lower(ts.name) = lower(_status_name)
+        WHERE lower(ts.name) = lower(_status_name) AND ts.project_id = _project_id
         LIMIT 1;
 
         -- Use default if not found
@@ -170,7 +171,7 @@ BEGIN
           _warning_list := array_append(_warning_list, json_build_object(
             'type', 'warning',
             'field', 'status',
-            'message', 'Status "' || _status_name || '" not found; using default',
+            'message', 'Status "' || _status_name || '" not found in project; using default',
             'value', _status_name,
             'task_name', _task_name
           ));

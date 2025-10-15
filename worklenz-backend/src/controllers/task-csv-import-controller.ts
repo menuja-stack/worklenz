@@ -259,8 +259,8 @@ export default class TaskcsvimportController extends WorklenzControllerBase {
           [allPriorityNames]
         );
         const stRes = await client.query(
-          `SELECT LOWER(name) AS name, id FROM task_statuses WHERE LOWER(name) = ANY($1)`,
-          [allStatusNames]
+          `SELECT LOWER(name) AS name, id FROM task_statuses WHERE project_id = $1 AND LOWER(name) = ANY($2)`,
+          [projectId, allStatusNames]
         );
         const priorityNameToId: Record<string, string> = {};
         const statusNameToId: Record<string, string> = {};
