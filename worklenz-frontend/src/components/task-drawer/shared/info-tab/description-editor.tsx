@@ -4,6 +4,24 @@ import { useAppSelector } from '@/hooks/useAppSelector';
 import { useSocket } from '@/socket/socketContext';
 import { SocketEvents } from '@/shared/socket-events';
 
+// Helper function to check if content already has processed mentions
+const hasProcessedMentions = (content: string): boolean => {
+  return content.includes('<span class="mentions">');
+};
+
+// Helper function to process mentions in content
+const processMentions = (content: string) => {
+  if (!content) return '';
+
+  // Check if content already contains mentions spans
+  if (hasProcessedMentions(content)) {
+    return content; // Already processed, return as is
+  }
+
+  // Replace @mentions with styled spans
+  return content.replace(/@(\w+)/g, '<span class="mentions">@$1</span>');
+};
+
 // Lazy load TinyMCE editor to reduce initial bundle size
 const LazyTinyMCEEditor = lazy(() => 
   import('@tinymce/tinymce-react').then(module => ({ default: module.Editor }))
@@ -27,7 +45,7 @@ const DescriptionEditor = ({ description, taskId, parentTaskId }: DescriptionEdi
   const wrapperRef = useRef<HTMLDivElement>(null);
   const themeMode = useAppSelector(state => state.themeReducer.mode);
 
-  // CSS styles for description content links
+  // CSS styles for description content links and mentions
   const descriptionStyles = `
     .description-content a {
       color: ${themeMode === 'dark' ? '#4dabf7' : '#1890ff'} !important;
@@ -36,6 +54,15 @@ const DescriptionEditor = ({ description, taskId, parentTaskId }: DescriptionEdi
     }
     .description-content a:hover {
       color: ${themeMode === 'dark' ? '#74c0fc' : '#40a9ff'} !important;
+    }
+    .description-content .mentions {
+      font-weight: 500;
+      border-radius: 4px;
+      padding: 1px 4px;
+      margin: 0 1px;
+      background: ${themeMode === 'dark' ? '#2a3a4a' : '#f0f2f5'};
+      color: ${themeMode === 'dark' ? '#40a9ff' : '#1890ff'};
+      border: 1px solid ${themeMode === 'dark' ? '#2a4a6d' : '#e6e6e6'};
     }
   `;
 
@@ -110,7 +137,9 @@ const DescriptionEditor = ({ description, taskId, parentTaskId }: DescriptionEdi
   }, [isEditorOpen, content, description, taskId, parentTaskId, socket]);
 
   const handleEditorChange = (content: string) => {
-    const sanitizedContent = DOMPurify.sanitize(content);
+    // First sanitize, then process mentions
+    let sanitizedContent = DOMPurify.sanitize(content);
+    sanitizedContent = processMentions(sanitizedContent);
     setContent(sanitizedContent);
     if (editorRef.current) {
       const count = editorRef.current.plugins.wordcount.getCount();
@@ -278,7 +307,7 @@ const DescriptionEditor = ({ description, taskId, parentTaskId }: DescriptionEdi
           {content ? (
             <div
               dangerouslySetInnerHTML={{
-                __html: DOMPurify.sanitize(content),
+                __html: DOMPurify.sanitize(processMentions(content)),
               }}
               className="description-content"
             />
