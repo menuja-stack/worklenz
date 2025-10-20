@@ -28,11 +28,6 @@ type TaskDrawerHeaderProps = {
   t: TFunction;
 };
 
-// Utility function to truncate text
-const truncateText = (text: string, maxLength: number = 50): string => {
-  if (!text || text.length <= maxLength) return text;
-  return `${text.substring(0, maxLength)}...`;
-};
 
 const TaskDrawerHeader = ({ inputRef, t }: TaskDrawerHeaderProps) => {
   const dispatch = useAppDispatch();
@@ -137,8 +132,6 @@ const TaskDrawerHeader = ({ inputRef, t }: TaskDrawerHeaderProps) => {
   };
 
   const displayTaskName = taskName || t('taskHeader.taskNamePlaceholder');
-  const truncatedTaskName = truncateText(displayTaskName, 50);
-  const shouldShowTooltip = displayTaskName.length > 50;
 
   return (
     <div>
@@ -165,14 +158,12 @@ const TaskDrawerHeader = ({ inputRef, t }: TaskDrawerHeaderProps) => {
               autoFocus
             />
           ) : (
-            <Tooltip title={shouldShowTooltip ? displayTaskName : ''} trigger="hover">
-              <p
-                onClick={() => setIsEditing(true)}
-                className="task-name-display"
-              >
-                {truncatedTaskName}
-              </p>
-            </Tooltip>
+            <p
+              onClick={() => setIsEditing(true)}
+              className="task-name-display"
+            >
+              {displayTaskName}
+            </p>
           )}
         </Flex>
 

@@ -59,7 +59,7 @@ export const TaskLabelsCell: React.FC<TaskLabelsCellProps> = memo(({ labels, isD
             key={`${label.id}-${index}`}
             label={label}
             isDarkMode={isDarkMode}
-          />
+          /> 
         );
       })}
     </div>
