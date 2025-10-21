@@ -15,9 +15,11 @@
   font-size: 16px;
   cursor: pointer;
   width: 100%;
+  max-width: 100%;
   white-space: normal;
   word-wrap: break-word;
-  overflow-wrap: break-word;
+  overflow-wrap: anywhere;
+  word-break: break-word;
   min-height: 20px;
   line-height: 1.4;
   display: block;

@@ -138,8 +138,8 @@ const TaskDrawerHeader = ({ inputRef, t }: TaskDrawerHeaderProps) => {
       {/* Show breadcrumb for sub-tasks */}
       {isSubTask && <TaskHierarchyBreadcrumb t={t} />}
       
-      <Flex gap={8} align="center" style={{ marginBlockEnd: 2 }}>
-        <Flex style={{ position: 'relative', width: '100%', alignItems: 'center' }}>
+      <Flex gap={8} align="flex-start" style={{ marginBlockEnd: 2 }}>
+        <Flex style={{ position: 'relative', flex: 1, minWidth: 0 }}>
           {isEditing ? (
             <Input
               ref={inputRef}
@@ -167,15 +167,17 @@ const TaskDrawerHeader = ({ inputRef, t }: TaskDrawerHeaderProps) => {
           )}
         </Flex>
 
-        <TaskDrawerStatusDropdown
-          statuses={taskFormViewModel?.statuses ?? []}
-          task={taskFormViewModel?.task ?? ({} as ITaskViewModel)}
-          teamId={currentSession?.team_id ?? ''}
-        />
+        <Flex gap={8} style={{ flexShrink: 0 }}>
+          <TaskDrawerStatusDropdown
+            statuses={taskFormViewModel?.statuses ?? []}
+            task={taskFormViewModel?.task ?? ({} as ITaskViewModel)}
+            teamId={currentSession?.team_id ?? ''}
+          />
 
-        <Dropdown overlayClassName={'delete-task-dropdown'} menu={{ items: deletTaskDropdownItems }}>
-          <Button type="text" icon={<EllipsisOutlined />} />
-        </Dropdown>
+          <Dropdown overlayClassName={'delete-task-dropdown'} menu={{ items: deletTaskDropdownItems }}>
+            <Button type="text" icon={<EllipsisOutlined />} />
+          </Dropdown>
+        </Flex>
       </Flex>
     </div>
   );
