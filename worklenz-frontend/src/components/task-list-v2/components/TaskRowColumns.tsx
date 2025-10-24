@@ -213,6 +213,7 @@ interface ProgressColumnProps {
 }
 
 export const ProgressColumn: React.FC<ProgressColumnProps> = memo(({ width, task }) => (
+  console.log("task", task),
   <div className="flex items-center justify-center px-2 border-r border-gray-200 dark:border-gray-700" style={{ width }}>
     {task.progress !== undefined &&
       task.progress >= 0 &&

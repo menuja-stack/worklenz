@@ -45,6 +45,13 @@ const TaskListTaskCell = ({
 
   const dispatch = useAppDispatch();
 
+  // Sync local state with Redux store when task.name changes
+  useEffect(() => {
+    if (!editTaskName) {
+      setTaskName(task.name || '');
+    }
+  }, [task.name, editTaskName]);
+
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (wrapperRef.current && !wrapperRef.current.contains(event.target as Node)) {

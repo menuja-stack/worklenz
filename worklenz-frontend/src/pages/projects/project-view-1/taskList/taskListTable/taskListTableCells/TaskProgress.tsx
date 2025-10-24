@@ -1,5 +1,5 @@
 import { Progress, Tooltip } from '@/shared/antd-imports';
-import React from 'react';
+import React, { useEffect } from 'react';
 import './TaskProgress.css';
 
 type TaskProgressProps = {
@@ -12,6 +12,10 @@ const TaskProgress = ({ progress = 0, numberOfSubTasks = 0 }: TaskProgressProps)
   const completedTasks = 0;
 
   const size = progress === 100 ? 21 : 26;
+
+  useEffect(() => {
+    console.log("progress", progress);
+  }, [progress]);
 
   return (
     <Tooltip title={`${completedTasks} / ${totalTasks}`}>

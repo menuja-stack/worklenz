@@ -10,6 +10,7 @@ type TaskListProgressCellProps = {
 
 const TaskListProgressCell = ({ task }: TaskListProgressCellProps) => {
   const { project } = useAppSelector(state => state.projectReducer);
+  
   const isManualProgressEnabled =
     task.project_use_manual_progress ||
     task.project_use_weighted_progress ||
@@ -17,41 +18,46 @@ const TaskListProgressCell = ({ task }: TaskListProgressCellProps) => {
   const isSubtask = task.is_sub_task;
   const hasManualProgress = task.manual_progress;
 
+  // Determine which progress value to display
+  // Priority: progress_value (manual) > complete_ratio (calculated from subtasks) > progress (fallback)
+  const getProgressValue = () => {
+    // If manual progress is set, use progress_value
+    if (hasManualProgress || isManualProgressEnabled) {
+      return task.progress_value ?? task.complete_ratio ?? task.progress ?? 0;
+    }
+    // Otherwise use complete_ratio (calculated from subtasks)
+    return task.complete_ratio ?? task.progress ?? 0;
+  };
+
+  const progressValue = getProgressValue();
+
   // Handle different cases:
-  // 1. For subtasks when manual progress is enabled, show the progress
-  // 2. For parent tasks, always show progress
-  // 3. For subtasks when manual progress is not enabled, don't show progress (null)
+  // 1. For subtasks when manual progress is not enabled, don't show progress
+  // 2. For all other cases, show the progress
 
   if (isSubtask && !isManualProgressEnabled) {
     return null; // Don't show progress for subtasks when manual progress is disabled
   }
 
-  // For parent tasks, show completion ratio with task count tooltip
-  if (!isSubtask) {
-    return (
-      <Tooltip title={`${task.completed_count || 0} / ${task.total_tasks_count || 0}`}>
-        <Progress
-          percent={task.complete_ratio || 0}
-          type="circle"
-          size={24}
-          style={{ cursor: 'default' }}
-          strokeWidth={(task.complete_ratio || 0) >= 100 ? 9 : 7}
-        />
-      </Tooltip>
-    );
-  }
+  // Determine tooltip content
+  const getTooltipTitle = () => {
+    if (hasManualProgress || isManualProgressEnabled) {
+      return `Manual Progress: ${progressValue}%`;
+    }
+    if (!isSubtask && (task.total_tasks_count ?? 0) > 0) {
+      return `${task.completed_count || 0} / ${task.total_tasks_count || 0} tasks completed (${progressValue}%)`;
+    }
+    return `${progressValue}%`;
+  };
 
-  // For subtasks with manual progress enabled, show the progress
   return (
-    <Tooltip
-      title={hasManualProgress ? `Manual: ${task.progress_value || 0}%` : `${task.progress || 0}%`}
-    >
+    <Tooltip title={getTooltipTitle()}>
       <Progress
-        percent={hasManualProgress ? task.progress_value || 0 : task.progress || 0}
+        percent={progressValue}
         type="circle"
-        size={22} // Slightly smaller for subtasks
+        size={isSubtask ? 22 : 24}
         style={{ cursor: 'default' }}
-        strokeWidth={(task.progress || 0) >= 100 ? 9 : 7}
+        strokeWidth={progressValue >= 100 ? 9 : 7}
       />
     </Tooltip>
   );

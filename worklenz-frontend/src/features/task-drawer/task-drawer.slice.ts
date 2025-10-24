@@ -96,6 +96,12 @@ const taskDrawerSlice = createSlice({
         state.taskFormViewModel.task.labels = all_labels || [];
       }
     },
+    setTaskName: (state, action: PayloadAction<{ id: string; name: string }>) => {
+      const { id: taskId, name } = action.payload;
+      if (state.taskFormViewModel?.task && state.taskFormViewModel.task.id === taskId) {
+        state.taskFormViewModel.task.name = name;
+      }
+    },
     setTaskSubscribers: (state, action: PayloadAction<InlineMember[]>) => {
       state.subscribers = action.payload;
     },
@@ -149,6 +155,7 @@ export const {
   setTaskAssignee,
   setTaskPriority,
   setTaskLabels,
+  setTaskName,
   setTaskSubscribers,
   setTimeLogEditing,
   setTaskRecurringSchedule,

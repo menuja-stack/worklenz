@@ -270,7 +270,7 @@ export const fetchTasksV3 = createAsyncThunk(
           status: task.status || 'todo',
           priority: task.priority || 'medium',
           phase: task.phase || 'Development',
-          progress: typeof task.complete_ratio === 'number' ? task.complete_ratio : 0,
+          progress: task.complete_ratio ? (typeof task.complete_ratio === 'number' ? task.complete_ratio : 0) : task.progress,
           assignees: task.assignees?.map((a: { team_member_id: string }) => a.team_member_id) || [],
           assignee_names: task.assignee_names || task.names || [],
           labels: task.labels?.map((l: { id: string; label_id: string; name: string; color: string; end: boolean; names: string[] }) => ({

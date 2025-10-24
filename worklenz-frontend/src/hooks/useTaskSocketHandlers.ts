@@ -65,6 +65,7 @@ import {
   setTaskAssignee,
   setTaskEndDate,
   setTaskLabels,
+  setTaskName,
   setTaskPriority,
   setTaskStatus,
   setTaskSubscribers,
@@ -457,6 +458,9 @@ export const useTaskSocketHandlers = () => {
       // Update the old task slice (for backward compatibility)
       dispatch(updateTaskName(data));
 
+      // Update the task drawer if this task is currently open
+      dispatch(setTaskName({ id: data.id, name: data.name }));
+
       // For the task management slice, update task name
       if (data.id) {
         const currentTask = store.getState().taskManagement.entities[data.id];
@@ -819,23 +823,73 @@ export const useTaskSocketHandlers = () => {
 
   const handleTaskProgressUpdated = useCallback(
     (data: { task_id: string; progress_value?: number; weight?: number }) => {
-      if (!data || !taskGroups) return;
+      if (!data) return;
 
       if (data.progress_value !== undefined) {
-        for (const group of taskGroups) {
-          const task = group.tasks?.find((task: IProjectTask) => task.id === data.task_id);
-          if (task) {
-            dispatch(
-              updateTaskProgress({
-                taskId: data.task_id,
-                progress: data.progress_value,
-                totalTasksCount: task.total_tasks_count || 0,
-                completedCount: task.completed_count || 0,
-              })
-            );
-            break;
+        // Update the old task slice (for backward compatibility)
+        // Always dispatch the update, even if we don't find the task in taskGroups
+        let totalTasksCount = 0;
+        let completedCount = 0;
+        
+        if (taskGroups) {
+          let taskFound = false;
+          for (const group of taskGroups) {
+            const task = group.tasks?.find((task: IProjectTask) => task.id === data.task_id);
+            if (task) {
+              totalTasksCount = task.total_tasks_count || 0;
+              completedCount = task.completed_count || 0;
+              taskFound = true;
+              break;
+            }
+            
+            // Also check subtasks
+            for (const parentTask of group.tasks || []) {
+              if (parentTask.sub_tasks) {
+                const subtask = parentTask.sub_tasks.find((st: IProjectTask) => st.id === data.task_id);
+                if (subtask) {
+                  totalTasksCount = subtask.total_tasks_count || 0;
+                  completedCount = subtask.completed_count || 0;
+                  taskFound = true;
+                  break;
+                }
+              }
+            }
+            if (taskFound) break;
           }
         }
+        
+        // Always dispatch the update
+        dispatch(
+          updateTaskProgress({
+            taskId: data.task_id,
+            progress: data.progress_value,
+            totalTasksCount,
+            completedCount,
+          })
+        );
+
+        // Update the task-management slice for task-list-v2 components
+        const currentTask = store.getState().taskManagement.entities[data.task_id];
+        if (currentTask) {
+          const updatedTask: Task = {
+            ...currentTask,
+            progress: data.progress_value,
+            updatedAt: new Date().toISOString(),
+            updated_at: new Date().toISOString(),
+          };
+          dispatch(updateTask(updatedTask));
+        }
+
+        // Update enhanced kanban slice
+        dispatch(
+          updateEnhancedKanbanTaskProgress({
+            id: data.task_id,
+            complete_ratio: data.progress_value,
+            completed_count: 0,
+            total_tasks_count: 0,
+            parent_task: null,
+          })
+        );
       }
     },
     [dispatch, taskGroups]

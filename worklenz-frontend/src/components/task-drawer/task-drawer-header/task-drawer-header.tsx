@@ -34,6 +34,7 @@ const TaskDrawerHeader = ({ inputRef, t }: TaskDrawerHeaderProps) => {
   const { socket, connected } = useSocket();
   const { clearTaskFromUrl } = useTaskDrawerUrlSync();
   const isDeleting = useRef(false);
+  const isSaving = useRef(false);
   const [isEditing, setIsEditing] = useState(false);
 
   const { taskFormViewModel, selectedTaskId } = useAppSelector(state => state.taskDrawerReducer);
@@ -43,9 +44,12 @@ const TaskDrawerHeader = ({ inputRef, t }: TaskDrawerHeaderProps) => {
   // Check if current task is a sub-task
   const isSubTask = taskFormViewModel?.task?.is_sub_task || !!taskFormViewModel?.task?.parent_task_id;
 
+  // Sync task name from Redux store when not editing and not saving
   useEffect(() => {
-    setTaskName(taskFormViewModel?.task?.name ?? '');
-  }, [taskFormViewModel?.task?.name]);
+    if (!isEditing && !isSaving.current) {
+      setTaskName(taskFormViewModel?.task?.name ?? '');
+    }
+  }, [taskFormViewModel?.task?.name, isEditing]);
 
   const onTaskNameChange = (e: ChangeEvent<HTMLInputElement>) => {
     setTaskName(e.currentTarget.value);
@@ -108,27 +112,51 @@ const TaskDrawerHeader = ({ inputRef, t }: TaskDrawerHeaderProps) => {
     },
   ];
 
-  const handleInputBlur = () => {
-    setIsEditing(false);
+  const handleTaskNameSave = () => {
+    const trimmedTaskName = taskName?.trim();
+    const currentTaskName = taskFormViewModel?.task?.name?.trim();
+    
     if (
       !selectedTaskId ||
       !connected ||
-      taskName === taskFormViewModel?.task?.name ||
-      taskName === undefined ||
-      taskName === null ||
-      taskName === ''
-    )
+      !trimmedTaskName ||
+      trimmedTaskName === currentTaskName
+    ) {
+      isSaving.current = false;
       return;
+    }
+    
+    isSaving.current = true;
+      
     socket?.emit(
       SocketEvents.TASK_NAME_CHANGE.toString(),
       JSON.stringify({
         task_id: selectedTaskId,
-        name: taskName,
+        name: trimmedTaskName,
         parent_task: taskFormViewModel?.task?.parent_task_id,
       })
     );
+    
+    // Reset saving flag after a short delay to allow socket response to update Redux
+    setTimeout(() => {
+      isSaving.current = false;
+    }, 500);
+    
     // Note: Real-time updates are handled by the global useTaskSocketHandlers hook
     // No need for local socket listeners that could interfere with global handlers
+  };
+
+  const handleInputBlur = () => {
+    setIsEditing(false);
+    handleTaskNameSave();
+  };
+
+  const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      setIsEditing(false);
+      handleTaskNameSave();
+    }
   };
 
   const displayTaskName = taskName || t('taskHeader.taskNamePlaceholder');
@@ -147,11 +175,11 @@ const TaskDrawerHeader = ({ inputRef, t }: TaskDrawerHeaderProps) => {
               value={taskName}
               onChange={e => onTaskNameChange(e)}
               onBlur={handleInputBlur}
+              onKeyPress={handleKeyPress}
               placeholder={t('taskHeader.taskNamePlaceholder')}
               className="task-name-input"
               style={{
                 width: '100%',
-                border: 'none',
               }}
               showCount={true}
               maxLength={250}

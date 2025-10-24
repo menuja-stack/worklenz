@@ -54,9 +54,11 @@ const TaskDrawerProgress = ({ task, form }: TaskDrawerProgressProps) => {
   useEffect(() => {
     // Listen for progress updates from the server
     const handleProgressUpdate = (data: any) => {
-      if (data.task_id === task.id) {
-        if (data.progress_value !== undefined) {
-          form.setFieldsValue({ progress_value: data.progress_value });
+      if (data.task_id === task.id || data.id === task.id) {
+        // Handle both progress_value (from TASK_PROGRESS_UPDATED) and complete_ratio (from GET_TASK_PROGRESS)
+        const progressValue = data.progress_value !== undefined ? data.progress_value : data.complete_ratio;
+        if (progressValue !== undefined) {
+          form.setFieldsValue({ progress_value: progressValue });
         }
         if (data.weight !== undefined) {
           form.setFieldsValue({ weight: data.weight });
@@ -70,6 +72,7 @@ const TaskDrawerProgress = ({ task, form }: TaskDrawerProgressProps) => {
     };
 
     socket?.on(SocketEvents.TASK_PROGRESS_UPDATED.toString(), handleProgressUpdate);
+    socket?.on(SocketEvents.GET_TASK_PROGRESS.toString(), handleProgressUpdate);
 
     // When the component mounts, explicitly request the latest progress for this task
     if (connected && task.id) {
@@ -78,6 +81,7 @@ const TaskDrawerProgress = ({ task, form }: TaskDrawerProgressProps) => {
 
     return () => {
       socket?.off(SocketEvents.TASK_PROGRESS_UPDATED.toString(), handleProgressUpdate);
+      socket?.off(SocketEvents.GET_TASK_PROGRESS.toString(), handleProgressUpdate);
     };
   }, [socket, connected, task.id, form]);
 
