@@ -220,13 +220,13 @@ export const fetchTasksV3 = createAsyncThunk(
         .filter((l: any) => l.selected && l.id)
         .map((l: any) => l.id)
         .join(' ');
-
+      console.log('state.taskReducer.taskAssignees', state.taskReducer.taskAssignees);
       // Get selected assignees from taskReducer
       const selectedAssignees = state.taskReducer.taskAssignees
         .filter((m: any) => m.selected && m.id)
         .map((m: any) => m.id)
         .join(' ');
-
+      console.log('selectedAssignees', selectedAssignees);
       // Get selected priorities from taskReducer
       const selectedPriorities = state.taskReducer.priorities.join(' ');
 

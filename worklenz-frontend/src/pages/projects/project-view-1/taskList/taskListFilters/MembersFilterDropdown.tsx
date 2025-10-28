@@ -14,7 +14,7 @@ import {
   Space,
   Typography,
 } from '@/shared/antd-imports';
-import { useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useAppSelector } from '@/hooks/useAppSelector';
 import { colors } from '@/styles/colors';
 import CustomAvatar from '@components/CustomAvatar';
@@ -22,9 +22,11 @@ import { useTranslation } from 'react-i18next';
 
 const MembersFilterDropdown = () => {
   const [selectedCount, setSelectedCount] = useState<number>(0);
+  const [selectedMembers, setSelectedMembers] = useState<Set<string>>(new Set());
   const membersInputRef = useRef<InputRef>(null);
 
   const members = useAppSelector(state => state.memberReducer.membersList);
+  const projectId = useAppSelector(state => state.projectReducer.projectId);
 
   const { t } = useTranslation('task-list-filters');
 
@@ -35,6 +37,30 @@ const MembersFilterDropdown = () => {
   // this is for get the current string that type on search bar
   const [searchQuery, setSearchQuery] = useState<string>('');
 
+  // Load saved selections from localStorage on component mount
+  useEffect(() => {
+    if (projectId) {
+      const savedSelections = localStorage.getItem(`selectedMembers_${projectId}`);
+      if (savedSelections) {
+        try {
+          const parsedSelections = JSON.parse(savedSelections);
+          const selectionsSet = new Set(parsedSelections);
+          setSelectedMembers(selectionsSet);
+          setSelectedCount(selectionsSet.size);
+        } catch (error) {
+          console.error('Error parsing saved member selections:', error);
+        }
+      }
+    }
+  }, [projectId]);
+
+  // Save selections to localStorage whenever selectedMembers changes
+  useEffect(() => {
+    if (projectId) {
+      localStorage.setItem(`selectedMembers_${projectId}`, JSON.stringify([...selectedMembers]));
+    }
+  }, [selectedMembers, projectId]);
+
   // used useMemo hook for re render the list when searching
   const filteredMembersData = useMemo(() => {
     return membersList.filter(member =>
@@ -43,8 +69,17 @@ const MembersFilterDropdown = () => {
   }, [membersList, searchQuery]);
 
   // handle selected filters count
-  const handleSelectedFiltersCount = (checked: boolean) => {
-    setSelectedCount(prev => (checked ? prev + 1 : prev - 1));
+  const handleSelectedFiltersCount = (memberId: string, checked: boolean) => {
+    setSelectedMembers(prev => {
+      const updated = new Set(prev);
+      if (checked) {
+        updated.add(memberId);
+      } else {
+        updated.delete(memberId);
+      }
+      return updated;
+    });
+    setSelectedCount(prev => checked ? prev + 1 : prev - 1);
   };
 
   // custom dropdown content
@@ -73,7 +108,8 @@ const MembersFilterDropdown = () => {
               >
                 <Checkbox
                   id={member.memberId}
-                  onChange={e => handleSelectedFiltersCount(e.target.checked)}
+                  checked={selectedMembers.has(member.memberId)}
+                  onChange={e => handleSelectedFiltersCount(member.memberId, e.target.checked)}
                 />
                 <div>
                   <CustomAvatar avatarName={member.memberName} />

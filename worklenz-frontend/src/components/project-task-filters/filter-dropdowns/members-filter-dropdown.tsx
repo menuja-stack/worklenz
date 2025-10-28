@@ -45,23 +45,6 @@ const MembersFilterDropdown = () => {
   const { taskAssignees: boardTaskAssignees } = useAppSelector(state => state.boardReducer);
   const { projectId } = useAppSelector(state => state.projectReducer);
 
-  useEffect(() => {
-    if (projectId) {
-      // Reset task assignees selections
-      const resetTaskMembers = taskAssignees.map(member => ({
-        ...member,
-        selected: false,
-      }));
-      dispatch(setMembers(resetTaskMembers));
-
-      // Reset board assignees selections
-      const resetBoardMembers = boardTaskAssignees.map(member => ({
-        ...member,
-        selected: false,
-      }));
-      dispatch(setBoardMembers(resetBoardMembers));
-    }
-  }, [projectId, dispatch]);
 
   const selectedCount = useMemo(() => {
     return projectView === 'list'
@@ -69,30 +52,40 @@ const MembersFilterDropdown = () => {
       : boardTaskAssignees.filter(member => member.selected).length;
   }, [taskAssignees, boardTaskAssignees, projectView]);
 
+  // Calculate selected member IDs from current view
+  const selectedMemberIds = useMemo(() => {
+    const members = projectView === 'list' ? taskAssignees : boardTaskAssignees;
+    return members.filter(member => member.selected).map(member => member.id);
+  }, [taskAssignees, boardTaskAssignees, projectView]);
+
+  // Update selections and save to localStorage
+  const updateSelections = useCallback(async (memberId: string, checked: boolean) => {
+    if (!projectId) return;
+
+    const members = projectView === 'list' ? taskAssignees : boardTaskAssignees;
+    const updatedMembers = members.map(member =>
+      member.id === memberId ? { ...member, selected: checked } : member
+    );
+
+    // Update Redux state
+    if (projectView === 'list') {
+      dispatch(setMembers(updatedMembers));
+      dispatch(fetchTaskGroups(projectId));
+    } else {
+      dispatch(setBoardMembers(updatedMembers));
+      dispatch(fetchBoardTaskGroups(projectId));
+    }
+
+    // Save to localStorage
+    const selectedIds = updatedMembers.filter(m => m.selected).map(m => m.id);
+    const storageKey = `memberSelections_${projectId}_${projectView}`;
+    localStorage.setItem(storageKey, JSON.stringify(selectedIds));
+  }, [projectId, projectView, taskAssignees, boardTaskAssignees, dispatch]);
+
   const filteredMembersData = useMemo(() => {
     const members = projectView === 'list' ? taskAssignees : boardTaskAssignees;
     return members.filter(member => member.name?.toLowerCase().includes(searchQuery.toLowerCase()));
   }, [taskAssignees, boardTaskAssignees, searchQuery, projectView]);
-
-  const handleSelectedFiltersCount = useCallback(
-    async (memberId: string | undefined, checked: boolean) => {
-      if (!memberId || !projectId) return;
-
-      const updateMembers = async (members: Member[], setAction: any, fetchAction: any) => {
-        const updatedMembers = members.map(member =>
-          member.id === memberId ? { ...member, selected: checked } : member
-        );
-        await dispatch(setAction(updatedMembers));
-        dispatch(fetchAction(projectId));
-      };
-      if (projectView === 'list') {
-        await updateMembers(taskAssignees as Member[], setMembers, fetchTaskGroups);
-      } else {
-        await updateMembers(boardTaskAssignees as Member[], setBoardMembers, fetchBoardTaskGroups);
-      }
-    },
-    [projectId, projectView, taskAssignees, boardTaskAssignees, dispatch]
-  );
 
   const renderMemberItem = (member: Member) => (
     <List.Item
@@ -102,8 +95,8 @@ const MembersFilterDropdown = () => {
     >
       <Checkbox
         id={member.id}
-        checked={member.selected}
-        onChange={e => handleSelectedFiltersCount(member.id, e.target.checked)}
+        checked={selectedMemberIds.includes(member.id)}
+        onChange={e => updateSelections(member.id, e.target.checked)}
       >
         <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
           <SingleAvatar avatarUrl={member.avatar_url} name={member.name} email={member.email} />
