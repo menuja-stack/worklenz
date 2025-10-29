@@ -226,6 +226,7 @@ export const useTaskSocketHandlers = () => {
             newStatusValue = 'doing';
           } else {
             newStatusValue = 'todo';
+            console.log('🔧 newStatusValue', newStatusValue);
           }
         }
 
@@ -253,9 +254,10 @@ export const useTaskSocketHandlers = () => {
           }
           
           // If still not found, try matching by status name (fallback)
-          if (!targetGroup && response.status) {
+          if (!targetGroup && (response as any).status) {
+            const statusName = String((response as any).status || '').toLowerCase();
             targetGroup = groups.find(group => 
-              group.title?.toLowerCase() === response.status.toLowerCase()
+              group.title?.toLowerCase() === statusName
             );
           }
 
@@ -681,13 +683,16 @@ export const useTaskSocketHandlers = () => {
           task_key: data.task_key || '',
           title: data.name || '',
           description: data.description || '',
-          status: (data.status_category?.is_todo
-            ? 'todo'
-            : data.status_category?.is_doing
-              ? 'doing'
-              : data.status_category?.is_done
-                ? 'done'
-                : 'todo') as 'todo' | 'doing' | 'done',
+          // Prefer canonical status ID if provided; otherwise fall back to category value
+          status: (data.status || (
+            data.status_category?.is_todo
+              ? 'todo'
+              : data.status_category?.is_doing
+                ? 'doing'
+                : data.status_category?.is_done
+                  ? 'done'
+                  : 'todo'
+          )) as string,
           priority: (data.priority_value === 3
             ? 'critical'
             : data.priority_value === 2
@@ -887,7 +892,7 @@ export const useTaskSocketHandlers = () => {
             complete_ratio: data.progress_value,
             completed_count: 0,
             total_tasks_count: 0,
-            parent_task: null,
+            parent_task: '',
           })
         );
       }
@@ -1027,13 +1032,8 @@ export const useTaskSocketHandlers = () => {
           }
           if (typeof taskData.status_id !== 'undefined') {
             const found = statusList.find(s => s.id === taskData.status_id);
-            if (found) {
-              updatedTask.status = found.name;
-              // updatedTask.status_id = found.id; // Only if Task type has status_id
-            } else {
-              updatedTask.status = taskData.status_id || '';
-              // updatedTask.status_id = taskData.status_id;
-            }
+            // Keep status as the canonical ID for consistency across grouping/color logic
+            updatedTask.status = found?.id || taskData.status_id || '';
           }
 
           dispatch(updateTask(updatedTask));

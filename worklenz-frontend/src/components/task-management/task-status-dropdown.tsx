@@ -34,6 +34,17 @@ const TaskStatusDropdown: React.FC<TaskStatusDropdownProps> = ({
   const currentGroupingV3 = useAppSelector(selectCurrentGroupingV3);
   const groups = useAppSelector(selectGroups);
 
+  // Fallback colors for common statuses when color codes are missing
+  const defaultStatusColors: Record<string, string> = {
+    'to do': '#3b82f6', // blue-500
+    'todo': '#3b82f6',
+    'to_do': '#3b82f6',
+    'doing': '#6366f1', // indigo-500
+    'in progress': '#6366f1',
+    'in_progress': '#6366f1',
+    'done': '#10b981', // emerald-500
+  };
+
   // Find current status details
   const currentStatus = useMemo(() => {
     return statusList.find(
@@ -133,10 +144,12 @@ const TaskStatusDropdown: React.FC<TaskStatusDropdownProps> = ({
   // Get status color - enhanced dark mode support
   const getStatusColor = useCallback(
     (status: any) => {
+      const normalizedName = (status?.name || '').toString().trim().toLowerCase();
+      const fallback = defaultStatusColors[normalizedName];
       if (isDarkMode) {
-        return status?.color_code_dark || status?.color_code || '#4b5563';
+        return status?.color_code_dark || status?.color_code || fallback || '#4b5563';
       }
-      return status?.color_code || '#6b7280';
+      return status?.color_code || fallback || '#6b7280';
     },
     [isDarkMode]
   );
@@ -174,9 +187,7 @@ const TaskStatusDropdown: React.FC<TaskStatusDropdownProps> = ({
         style={{
           backgroundColor: currentStatus
             ? getStatusColor(currentStatus)
-            : isDarkMode
-              ? '#4b5563'
-              : '#9ca3af',
+            : getStatusColor({ name: typeof task.status === 'string' ? task.status : '' }),
           color: 'white',
         }}
       >
