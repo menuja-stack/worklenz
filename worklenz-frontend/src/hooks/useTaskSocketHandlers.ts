@@ -617,7 +617,7 @@ export const useTaskSocketHandlers = () => {
 
 
   const handleEstimationChange = useCallback(
-    (data: { id: string; parent_task: string | null; total_hours: number; total_minutes: number }) => {
+    (data: { id: string; parent_task: string | null; total_hours: number; total_minutes: number; total_time_string: string }) => {
       if (!data) return;
 
       // Update the old task slice (for backward compatibility)
@@ -636,7 +636,7 @@ export const useTaskSocketHandlers = () => {
           ...currentTask,
           timeTracking: {
             ...currentTask.timeTracking,
-            estimated: estimatedHours,
+            estimated: data.total_time_string || `${estimatedHours}h ${data.total_minutes}m`,
           },
           updatedAt: new Date().toISOString(),
           updated_at: new Date().toISOString(),

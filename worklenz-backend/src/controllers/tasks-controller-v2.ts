@@ -1284,7 +1284,7 @@ export default class TasksControllerV2 extends TasksControllerBase {
         dueDate: task.end_date || task.END_DATE,
         startDate: task.start_date,
         timeTracking: {
-          estimated: convertTimeValue(task.total_time),
+          estimated: task.total_time_string,
           logged: convertTimeValue(task.time_spent),
         },
         customFields: {},

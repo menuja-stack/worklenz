@@ -488,8 +488,8 @@ html.dark .ant-modal-error .ant-modal-confirm-content {
 }
 
 .dark .ant-select-selector {
-  background-color: #262626 !important;
-  border-color: #404040 !important;
+  
+  
   color: rgba(255, 255, 255, 0.85) !important;
 }
 

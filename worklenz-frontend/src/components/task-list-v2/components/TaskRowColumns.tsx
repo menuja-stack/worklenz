@@ -304,6 +304,9 @@ export const EstimationColumn: React.FC<EstimationColumnProps> = memo(({ width, 
   const estimationDisplay = (() => {
     const estimatedHours = task.timeTracking?.estimated;
     
+    if (typeof estimatedHours == 'string') {
+      return estimatedHours;
+    }
     if (estimatedHours && estimatedHours > 0) {
       const hours = Math.floor(estimatedHours);
       const minutes = Math.round((estimatedHours - hours) * 60);
