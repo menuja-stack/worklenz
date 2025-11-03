@@ -10,16 +10,45 @@ const hasProcessedMentions = (content: string): boolean => {
 };
 
 // Helper function to process mentions in content
-const processMentions = (content: string) => {
+const processMentions = (content: string, isEditorActive: boolean = false) => {
   if (!content) return '';
 
-  // Check if content already contains mentions spans
-  if (hasProcessedMentions(content)) {
-    return content; // Already processed, return as is
+  // Remove existing mention spans to avoid double-processing
+  const cleanedContent = content.replace(/<span class="mentions">@?([^<]+)<\/span>/gi, '@$1');
+
+  // Process mentions: Match @ followed by word chars, but NOT if preceded by @ (handle @@ case)
+  // Use a function to check context and ensure we don't process @@ mentions
+  let processedContent = cleanedContent;
+  const mentionRegex = /@([a-zA-Z0-9_.-]+)(?=\s|[.,;:!?<>]|<\/|$)/g;
+  const replacements: Array<{ start: number; end: number; replacement: string }> = [];
+
+  // Find all potential mentions
+  let match;
+  while ((match = mentionRegex.exec(cleanedContent)) !== null) {
+    const matchStart = match.index;
+    const matchEnd = match.index + match[0].length;
+    
+    // Check if this @ is preceded by another @ (i.e., @@word)
+    // If so, skip this match (don't highlight @@word, only @word)
+    if (matchStart > 0 && cleanedContent[matchStart - 1] === '@') {
+      continue; // Skip @@ cases
+    }
+
+    replacements.push({
+      start: matchStart,
+      end: matchEnd,
+      replacement: `<span class="mentions">@${match[1]}</span>`,
+    });
   }
 
-  // Replace @mentions with styled spans
-  return content.replace(/@(\w+)/g, '<span class="mentions">@$1</span>');
+  // Apply replacements in reverse order to maintain correct indices
+  for (let i = replacements.length - 1; i >= 0; i--) {
+    const { start, end, replacement } = replacements[i];
+    processedContent =
+      processedContent.substring(0, start) + replacement + processedContent.substring(end);
+  }
+
+  return processedContent;
 };
 
 // Lazy load TinyMCE editor to reduce initial bundle size
@@ -137,9 +166,9 @@ const DescriptionEditor = ({ description, taskId, parentTaskId }: DescriptionEdi
   }, [isEditorOpen, content, description, taskId, parentTaskId, socket]);
 
   const handleEditorChange = (content: string) => {
-    // First sanitize, then process mentions
+    // Store raw content during typing - don't process mentions yet to avoid cursor jumping
+    // Mentions will be processed on blur when editing is complete
     let sanitizedContent = DOMPurify.sanitize(content);
-    sanitizedContent = processMentions(sanitizedContent);
     setContent(sanitizedContent);
     if (editorRef.current) {
       const count = editorRef.current.plugins.wordcount.getCount();
@@ -147,9 +176,20 @@ const DescriptionEditor = ({ description, taskId, parentTaskId }: DescriptionEdi
     }
   };
 
+  const handleEditorBlur = () => {
+    // Final processing on blur to ensure mentions are properly formatted
+    if (editorRef.current) {
+      let processedContent = DOMPurify.sanitize(editorRef.current.getContent());
+      processedContent = processMentions(processedContent, true);
+      editorRef.current.setContent(processedContent);
+      setContent(processedContent);
+    }
+  };
+
   const handleInit = (evt: any, editor: any) => {
     editorRef.current = editor;
     editor.on('focus', () => setIsEditorOpen(true));
+    editor.on('blur', handleEditorBlur);
     const initialCount = editor.plugins.wordcount.getCount();
     setWordCount(initialCount);
     setIsEditorLoading(false);
