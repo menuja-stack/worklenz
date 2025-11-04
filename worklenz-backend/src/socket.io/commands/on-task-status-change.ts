@@ -89,15 +89,36 @@ export async function on_task_status_change(_io: Server, socket: Socket, data?: 
         }
       }
     } else {
-      // Task is moving from "done" to "todo" or "doing" - reset manual_progress to FALSE
-      // so progress can be recalculated based on subtasks
-      await db.query(`
-        UPDATE tasks
-        SET manual_progress = FALSE
+      // Task is moving from "done" to "todo" or "doing"
+      // Get current progress to check if it was set to 100% by done status
+      const progressResult = await db.query(`
+        SELECT progress_value, manual_progress
+        FROM tasks
         WHERE id = $1
       `, [body.task_id]);
 
-      log(`Task ${body.task_id} moved from done status - manual_progress reset to FALSE`, null);
+      const currentProgress = progressResult.rows[0]?.progress_value;
+      const wasManualProgress = progressResult.rows[0]?.manual_progress;
+
+      // Reset manual_progress to FALSE and clear progress_value
+      // so progress can be recalculated based on subtasks/time/etc
+      await db.query(`
+        UPDATE tasks
+        SET manual_progress = FALSE, progress_value = NULL
+        WHERE id = $1
+      `, [body.task_id]);
+
+      log(`Task ${body.task_id} moved from done status - manual_progress reset to FALSE and progress_value cleared`, null);
+
+      // Log the progress change if it was 100%
+      if (currentProgress === 100 && wasManualProgress) {
+        await logProgressChange({
+          task_id: body.task_id,
+          old_value: "100",
+          new_value: "0",
+          socket
+        });
+      }
 
       // If this is a subtask, update parent task progress
       if (body.parent_task) {

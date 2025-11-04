@@ -234,7 +234,7 @@ export const useTaskSocketHandlers = () => {
           updateTask({
             ...currentTask,
             status: response.status_id || newStatusValue, // Use actual status_id instead of category
-            progress: response.complete_ratio || currentTask.progress,
+            progress: response.complete_ratio !== undefined ? response.complete_ratio : currentTask.progress,
             updatedAt: new Date().toISOString(),
           })
         );
@@ -308,7 +308,7 @@ export const useTaskSocketHandlers = () => {
         if (currentTask) {
           const updatedTask: Task = {
             ...currentTask,
-            progress: data.complete_ratio,
+            progress: data.complete_ratio !== undefined ? data.complete_ratio : currentTask.progress,
             updatedAt: new Date().toISOString(),
             updated_at: new Date().toISOString(),
           };
