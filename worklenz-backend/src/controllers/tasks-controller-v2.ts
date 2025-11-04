@@ -1268,8 +1268,11 @@ export default class TasksControllerV2 extends TasksControllerBase {
         priority: priorityMap[task.priority_value?.toString()] || "medium",
         // Use actual phase name from database
         phase: task.phase_name || "Development",
-        progress:
-          typeof task.complete_ratio === "number" ? task.complete_ratio : 0,
+        // Progress comes from updateTaskViewModel which normalizes both
+        // prefer task.progress (already parsed), then complete_ratio, else 0
+        progress: (typeof task.progress === "number"
+          ? task.progress
+          : (typeof task.complete_ratio === "number" ? task.complete_ratio : 0)),
         assignees: task.assignees?.map((a: any) => a.team_member_id) || [],
         assignee_names: task.assignee_names || task.names || [],
         labels:
@@ -1299,6 +1302,8 @@ export default class TasksControllerV2 extends TasksControllerBase {
         priorityColor: task.priority_color,
         // Add subtask count
         sub_tasks_count: task.sub_tasks_count || 0,
+        // Also expose computed complete_ratio for consumers relying on it
+        complete_ratio: (typeof task.complete_ratio === "number" ? task.complete_ratio : (typeof task.progress === "number" ? task.progress : 0)),
         // Add indicator fields for frontend icons
         comments_count: task.comments_count || 0,
         has_subscribers: !!task.has_subscribers,
@@ -1407,9 +1412,6 @@ export default class TasksControllerV2 extends TasksControllerBase {
           group.done_progress =
             total > 0 ? +((doneCount / total) * 100).toFixed(0) : 0;
         }
-        group.todo_progress = 0;
-        group.doing_progress = 0;
-        group.done_progress = 0;
       });
     }
 

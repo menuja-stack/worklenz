@@ -70,6 +70,13 @@ export default class TasksControllerBase extends WorklenzControllerBase {
     task.progress = parseInt(task.progress) || 0;
     task.complete_ratio = parseInt(task.complete_ratio) || 0;
 
+    // CRITICAL: If task is in a Done status, force 100% progress
+    // This must happen AFTER numeric parsing to ensure it's not reset to 0
+    if (task?.status_category?.is_done === true || task?.is_complete === true) {
+      task.progress = 100;
+      task.complete_ratio = 100;
+    }
+
     task.overdue = task.total_minutes < task.total_minutes_spent;
 
     task.time_spent = { hours: ~~(task.total_minutes_spent / 60), minutes: task.total_minutes_spent % 60 };
